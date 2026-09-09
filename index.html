@@ -24,12 +24,26 @@
     --line-soft: #ece7db;
     --teal: #3e6259;
     --danger: #97402f;
+    --good: #2f6d3a;
     --radius: 14px;
     --radius-sm: 8px;
     --shadow: 0 1px 2px rgba(7,41,94,.06), 0 12px 28px -16px rgba(7,41,94,.28);
     --serif: 'Montserrat', 'Segoe UI', sans-serif;
     --sans: 'IBM Plex Sans', 'Segoe UI', sans-serif;
   }
+
+  html.dark{
+    --paper: #0e1320;
+    --paper-raised: #161c2c;
+    --ink: #eceef4;
+    --ink-soft: #a3aac0;
+    --line: #2a3247;
+    --line-soft: #202739;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -16px rgba(0,0,0,.6);
+  }
+  html.dark .badge.pass{ background: #16321d; color: #86d19a; }
+  html.dark .badge.fail{ background: #3a201d; color: #e2948a; }
+  html.dark .swing-flat{ color: var(--ink-soft); }
 
   *{ box-sizing: border-box; }
   html{ scroll-behavior: smooth; }
@@ -40,9 +54,11 @@
     font-family: var(--sans);
     line-height:1.5;
     -webkit-font-smoothing: antialiased;
+    transition: background .15s, color .15s;
   }
   a{ color: inherit; }
   h1,h2,h3{ font-family: var(--serif); font-weight:800; margin:0; color: var(--navy); letter-spacing: -0.01em; }
+  html.dark h1, html.dark h2, html.dark h3{ color: #ffffff; }
   button{ font-family: var(--sans); cursor:pointer; }
   input, select{ font-family: var(--sans); }
 
@@ -57,7 +73,7 @@
   }
   header .wrap{
     display:flex; align-items:center; justify-content:space-between;
-    height: 64px;
+    height: 64px; gap: 16px;
   }
   .brand{ display:flex; align-items:baseline; gap:10px; }
   .brand .mark{
@@ -65,42 +81,42 @@
     text-transform: uppercase;
   }
   .brand .sub{ font-size: .78rem; color: var(--gold-soft); }
+  .header-right{ display:flex; align-items:center; gap: 18px; }
   nav{ display:flex; gap: 22px; }
   nav a{
     text-decoration:none; font-size: .92rem; color: var(--paper); opacity:.82;
     border-bottom: 2px solid transparent; padding-bottom: 3px;
   }
   nav a:hover{ opacity:1; border-color: var(--gold); }
+  .theme-toggle{
+    border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.08); color: var(--paper);
+    padding: 6px 12px; border-radius: 999px; font-size: .8rem; font-weight:600;
+  }
+  .theme-toggle:hover{ background: rgba(255,255,255,.18); }
 
   /* Hero */
-  .hero{
-    padding: 28px 0 40px;
-  }
+  .hero{ padding: 28px 0 40px; }
   .hero .card{
     background: linear-gradient(135deg, var(--navy), var(--blue));
     border-radius: var(--radius);
     padding: 44px 44px 36px;
     box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
   }
-  .hero .grid{
-    display:grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items:center;
+  .hero .content{ position: relative; z-index: 1; max-width: 640px; }
+  .star-ring{
+    position: absolute; top: 50%; right: -130px; transform: translateY(-50%);
+    width: 420px; height: 420px; opacity: .16; pointer-events: none;
   }
+  .star-ring path{ fill: #ffffff; }
   .hero .eyebrow{
     color: rgba(255,255,255,.7); font-size: .78rem; font-weight:700; letter-spacing:.08em;
     text-transform: uppercase; margin-bottom: 10px;
   }
-  .hero h1{
-    font-size: clamp(1.9rem, 3.2vw, 2.7rem);
-    line-height:1.15;
-    max-width: 16ch;
-    color: #ffffff;
-  }
-  .hero p.lede{
-    margin-top:14px; max-width: 46ch; color: rgba(255,255,255,.78); font-size: 1rem;
-  }
-  .facts{
-    margin-top: 28px; display:flex; gap: 12px; flex-wrap:wrap;
-  }
+  .hero h1{ font-size: clamp(1.9rem, 3.2vw, 2.7rem); line-height:1.15; max-width: 16ch; color: #ffffff; }
+  .hero p.lede{ margin-top:14px; max-width: 46ch; color: rgba(255,255,255,.78); font-size: 1rem; }
+  .facts{ margin-top: 28px; display:flex; gap: 12px; flex-wrap:wrap; }
   .fact{
     flex:1; min-width: 140px; padding: 14px 16px;
     background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18);
@@ -108,9 +124,6 @@
   }
   .fact .n{ font-family: var(--serif); font-weight:800; font-size: 1.6rem; color:#ffffff; font-variant-numeric: tabular-nums; }
   .fact .l{ font-size: .76rem; color: rgba(255,255,255,.72); margin-top:2px; }
-
-  .hemi-ghost{ opacity:.9; }
-  .hemi-ghost circle.seat{ fill: rgba(255,255,255,.35); }
 
   /* Sections */
   section{ padding: 56px 0; border-bottom: 1px solid var(--line); }
@@ -125,11 +138,13 @@
     padding: 9px 18px; border-radius: var(--radius-sm); font-size: .88rem; font-weight:600;
     transition: background .15s, color .15s;
   }
-  .btn:hover{ background: var(--navy); color: var(--paper); }
+  html.dark .btn{ border-color: var(--blue-soft); color: var(--blue-soft); }
+  .btn:hover{ background: var(--navy); color: #fff; }
+  html.dark .btn:hover{ background: var(--blue-soft); color: var(--navy); }
   .btn.primary{ background: var(--blue); border-color: var(--blue); color: #ffffff; }
   .btn.primary:hover{ background: var(--navy); border-color: var(--navy); }
   .btn.gold{ border-color: var(--gold); color: var(--gold); }
-  .btn.gold:hover{ background: var(--gold); color: var(--paper); }
+  .btn.gold:hover{ background: var(--gold); color: #fff; }
   .btn.ghost{ border-color: var(--line); color: var(--ink-soft); }
   .btn.ghost:hover{ background: var(--ink); color: var(--paper); border-color: var(--ink); }
   .btn.small{ padding: 5px 10px; font-size: .78rem; }
@@ -137,7 +152,9 @@
   .btn[disabled]{ opacity:.4; cursor:not-allowed; }
   .btn[disabled]:hover{ background:transparent; color:var(--navy); }
 
-  .row-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .row-actions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .copy-note{ font-size: .78rem; color: var(--good); font-weight:600; opacity:0; transition: opacity .2s; }
+  .copy-note.show{ opacity:1; }
 
   /* Table */
   table{ width:100%; border-collapse: collapse; }
@@ -154,25 +171,26 @@
   input[type=color]::-webkit-color-swatch-wrapper{ padding:0; }
   input[type=color]::-webkit-color-swatch{ border-radius:50%; border:1px solid rgba(0,0,0,.25); }
 
-  input[type=text], input[type=number]{
+  input[type=text], input[type=number], input[type=search]{
     border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink);
     padding: 7px 10px; border-radius: var(--radius-sm); font-size: .88rem; width: 100%;
   }
-  input[type=text]:focus, input[type=number]:focus, select:focus{
+  input[type=text]:focus, input[type=number]:focus, input[type=search]:focus, select:focus{
     outline: 2px solid var(--gold-soft); outline-offset:1px;
   }
   select{
     border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink);
     padding: 7px 10px; border-radius: var(--radius-sm); font-size: .85rem;
   }
-  td.name-cell input{ min-width: 140px; }
-  td.abbr-cell input{ width: 64px; }
-  td.pct-cell input{ width: 72px; text-align:right; }
+  td.name-cell input{ min-width: 130px; }
+  td.abbr-cell input{ width: 60px; }
+  td.pct-cell input{ width: 68px; text-align:right; }
+  td.prev-cell input{ width: 68px; text-align:right; }
   td.type-cell select{ width: 100%; }
+  td.check-cell{ text-align:center; width: 30px; }
+  input[type=checkbox]{ width:16px; height:16px; accent-color: var(--blue); cursor:pointer; }
 
-  tr.list-row td:first-child{
-    border-left: 5px solid var(--row-accent, transparent);
-  }
+  tr.list-row td:first-child{ border-left: 5px solid var(--row-accent, transparent); }
   tr.list-row td{ background: var(--row-accent-faint, transparent); }
 
   .legend{ display:flex; flex-wrap:wrap; gap: 10px 18px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-soft); }
@@ -180,11 +198,14 @@
   .legend-item .chip{ width: 12px; height:12px; border-radius: 3px; flex-shrink:0; border: 1px solid rgba(0,0,0,.15); }
   .legend-item .n{ font-family: var(--serif); font-weight:800; color: var(--ink); }
 
-  .badge{
-    display:inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 999px; font-weight:600;
-  }
+  .badge{ display:inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 999px; font-weight:600; }
   .badge.pass{ background: #dfe8db; color: #33532d; }
   .badge.fail{ background: #f0ddd7; color: var(--danger); }
+
+  .swing{ font-size: .82rem; font-weight:700; white-space:nowrap; }
+  .swing-up{ color: var(--good); }
+  .swing-down{ color: var(--danger); }
+  .swing-flat{ color: var(--ink-soft); }
 
   .total-line{ display:flex; align-items:center; gap:14px; margin-top: 16px; flex-wrap:wrap; }
   .total-line .amount{ font-family: var(--serif); font-size:1.1rem; }
@@ -194,15 +215,31 @@
   .results-grid{ display:flex; flex-direction:column; gap: 32px; }
   .hemi-card{
     background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius);
-    padding: 18px 18px 8px;
-    box-shadow: var(--shadow);
+    padding: 18px 18px 8px; box-shadow: var(--shadow);
   }
   .hemi-card svg{ width:100%; height:auto; display:block; }
   .majority-note{ text-align:center; font-size: .82rem; color: var(--ink-soft); margin-top: -4px; padding-bottom: 12px; }
 
   .alliance-block{ margin-top: 18px; border:1px dashed var(--line); border-radius: var(--radius); padding: 12px 14px; }
   .alliance-block summary{ cursor:pointer; font-size: .88rem; font-weight:600; color: var(--navy); }
+  html.dark .alliance-block summary{ color: var(--blue-soft); }
   .alliance-block table{ margin-top: 12px; }
+  .alliance-block .prev-cell-h{ width: 70px; }
+
+  .results-toolbar{ margin-bottom: 14px; max-width: 320px; }
+
+  .coalition-bar{
+    display:flex; align-items:center; justify-content:space-between; gap: 16px; flex-wrap:wrap;
+    background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius-sm);
+    padding: 12px 16px; margin-bottom: 14px;
+  }
+  .coalition-bar .info{ font-size: .88rem; }
+  .coalition-bar .info b{ font-family: var(--serif); font-weight:800; }
+  .coalition-status{ font-size: .78rem; padding: 3px 10px; border-radius: 999px; font-weight:700; }
+  .coalition-status.yes{ background:#dfe8db; color:#33532d; }
+  .coalition-status.no{ background:#f0ddd7; color:var(--danger); }
+  html.dark .coalition-status.yes{ background:#16321d; color:#86d19a; }
+  html.dark .coalition-status.no{ background:#3a201d; color:#e2948a; }
 
   /* Regions placeholder */
   .stub{
@@ -211,6 +248,16 @@
   }
   .stub .glyphs{ display:flex; justify-content:center; gap:10px; margin-bottom:16px; }
   .stub .glyphs span{ width:34px; height:34px; border:1px solid var(--line); border-radius:50%; }
+
+  /* History chart */
+  .history-card{
+    background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow);
+  }
+  .history-card svg{ width:100%; height:auto; display:block; }
+  .history-card .axis-label{ font-size: 9px; fill: var(--ink-soft); font-family: var(--sans); }
+  .history-card .gridline{ stroke: var(--line-soft); stroke-width: 1; }
+  .history-legend{ display:flex; flex-wrap:wrap; gap: 10px 18px; margin-top: 14px; }
 
   /* Config */
   .config-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -222,13 +269,14 @@
   footer .wrap{ display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap; }
   footer .cite{ font-size: .78rem; color: var(--ink-soft); max-width: 52ch; }
   footer .brand-mini{ font-family: var(--serif); font-weight:600; color: var(--navy); }
+  html.dark footer .brand-mini{ color: #fff; }
 
   @media (max-width: 860px){
-    .hero .grid{ grid-template-columns: 1fr; }
     .config-grid{ grid-template-columns: 1fr; }
     nav{ display:none; }
     .facts{ flex-wrap:wrap; }
-    .fact{ flex: 1 1 45%; border-right:none; padding-top:14px; border-top:1px solid var(--line-soft); }
+    .fact{ flex: 1 1 45%; }
+    .star-ring{ right: -220px; opacity: .1; }
   }
 </style>
 </head>
@@ -240,30 +288,45 @@
       <span class="mark">Evropean Assembly Simulator</span>
       <span class="sub">Constitution, Art. 79 &amp; 81</span>
     </div>
-    <nav>
-      <a href="#lists">Electoral lists</a>
-      <a href="#results">Seat composition</a>
-      <a href="#regions">Regions</a>
-      <a href="#config">Configuration</a>
-    </nav>
+    <div class="header-right">
+      <nav>
+        <a href="#lists">Electoral lists</a>
+        <a href="#results">Seat composition</a>
+        <a href="#history">History</a>
+        <a href="#regions">Regions</a>
+        <a href="#config">Configuration</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" type="button">Dark mode</button>
+    </div>
   </div>
 </header>
 
 <section class="hero">
   <div class="wrap">
     <div class="card">
-      <div class="grid">
-        <div>
-          <div class="eyebrow">Election simulator</div>
-          <h1>From one Evropa-wide result to all 720 seats of the Assembly.</h1>
-          <p class="lede">Enter the national result of each list, and the simulator applies the electoral threshold and seat formula set out in the Constitution to fill the Evropean Assembly.</p>
-          <div class="facts">
-            <div class="fact"><div class="n">720</div><div class="l">Assembly seats · Art. 79</div></div>
-            <div class="fact"><div class="n">5% / 7%</div><div class="l">Threshold, party / alliance · Art. 81</div></div>
-            <div class="fact"><div class="n">361</div><div class="l">Seats for a majority</div></div>
-          </div>
+      <svg class="star-ring" viewBox="0 0 400 400" aria-hidden="true">
+        <polygon points="200.00,34.00 203.64,44.98 215.22,45.06 205.90,51.92 209.40,62.94 200.00,56.20 190.60,62.94 194.10,51.92 184.78,45.06 196.36,44.98"/>
+        <polygon points="275.00,54.10 278.64,65.08 290.22,65.15 280.90,72.01 284.40,83.04 275.00,76.30 265.60,83.04 269.10,72.01 259.78,65.15 271.36,65.08"/>
+        <polygon points="329.90,109.00 333.55,119.98 345.12,120.06 335.80,126.92 339.31,137.94 329.90,131.20 320.50,137.94 324.01,126.92 314.69,120.06 326.26,119.98"/>
+        <polygon points="350.00,184.00 353.64,194.98 365.22,195.06 355.90,201.92 359.40,212.94 350.00,206.20 340.60,212.94 344.10,201.92 334.78,195.06 346.36,194.98"/>
+        <polygon points="329.90,259.00 333.55,269.98 345.12,270.06 335.80,276.92 339.31,287.94 329.90,281.20 320.50,287.94 324.01,276.92 314.69,270.06 326.26,269.98"/>
+        <polygon points="275.00,313.90 278.64,324.89 290.22,324.96 280.90,331.82 284.40,342.85 275.00,336.10 265.60,342.85 269.10,331.82 259.78,324.96 271.36,324.89"/>
+        <polygon points="200.00,334.00 203.64,344.98 215.22,345.06 205.90,351.92 209.40,362.94 200.00,356.20 190.60,362.94 194.10,351.92 184.78,345.06 196.36,344.98"/>
+        <polygon points="125.00,313.90 128.64,324.89 140.22,324.96 130.90,331.82 134.40,342.85 125.00,336.10 115.60,342.85 119.10,331.82 109.78,324.96 121.36,324.89"/>
+        <polygon points="70.10,259.00 73.74,269.98 85.31,270.06 75.99,276.92 79.50,287.94 70.10,281.20 60.69,287.94 64.20,276.92 54.88,270.06 66.45,269.98"/>
+        <polygon points="50.00,184.00 53.64,194.98 65.22,195.06 55.90,201.92 59.40,212.94 50.00,206.20 40.60,212.94 44.10,201.92 34.78,195.06 46.36,194.98"/>
+        <polygon points="70.10,109.00 73.74,119.98 85.31,120.06 75.99,126.92 79.50,137.94 70.10,131.20 60.69,137.94 64.20,126.92 54.88,120.06 66.45,119.98"/>
+        <polygon points="125.00,54.10 128.64,65.08 140.22,65.15 130.90,72.01 134.40,83.04 125.00,76.30 115.60,83.04 119.10,72.01 109.78,65.15 121.36,65.08"/>
+      </svg>
+      <div class="content">
+        <div class="eyebrow">Election simulator</div>
+        <h1>From one Evropa-wide result to all 720 seats of the Assembly.</h1>
+        <p class="lede">Enter the national result of each list, and the simulator applies the electoral threshold and seat formula set out in the Constitution to fill the Evropean Assembly.</p>
+        <div class="facts">
+          <div class="fact"><div class="n">720</div><div class="l">Assembly seats · Art. 79</div></div>
+          <div class="fact"><div class="n">5% / 7%</div><div class="l">Threshold, party / alliance · Art. 81</div></div>
+          <div class="fact"><div class="n">361</div><div class="l">Seats for a majority</div></div>
         </div>
-        <div class="hemi-ghost" id="heroHemi" aria-hidden="true"></div>
       </div>
     </div>
   </div>
@@ -274,11 +337,13 @@
     <div class="section-head">
       <div>
         <h2>Electoral lists</h2>
-        <p class="note">These percentages fix the Evropa-wide result of each list. Mark a list as an alliance to split its seats among member parties afterwards.</p>
+        <p class="note">These percentages fix the Evropa-wide result of each list. "Prev %" is that list's result at the last election, used to calculate swing. Mark a list as an alliance to split its seats — and its baseline — among member parties.</p>
       </div>
       <div class="row-actions">
         <button class="btn" id="addListBtn">+ Add list</button>
         <button class="btn ghost" id="resetBtn">Reset to placeholders</button>
+        <button class="btn gold" id="shareBtn">Copy share link</button>
+        <span class="copy-note" id="copyNote">Link copied!</span>
       </div>
     </div>
 
@@ -290,6 +355,7 @@
           <th>Abbr.</th>
           <th>Type</th>
           <th class="num">Result %</th>
+          <th class="num">Prev %</th>
           <th style="width:36px"></th>
         </tr>
       </thead>
@@ -298,6 +364,7 @@
         <tr class="total-row">
           <td colspan="4">Entered total</td>
           <td class="num" id="totalPct">0.00%</td>
+          <td></td>
           <td></td>
         </tr>
       </tfoot>
@@ -316,7 +383,7 @@
     <div class="section-head">
       <div>
         <h2>Evropean Assembly</h2>
-        <p class="note">Seats are allocated only to lists that clear the electoral threshold, using the method chosen in Configuration.</p>
+        <p class="note">Seats are allocated only to lists that clear the electoral threshold, using the method chosen in Configuration. Swing is measured against each list's "Prev %" baseline — for an alliance, that's the combined baseline of its current member parties.</p>
       </div>
     </div>
 
@@ -328,11 +395,25 @@
       </div>
 
       <div>
+        <div class="results-toolbar">
+          <input type="search" id="resultsSearch" placeholder="Search lists…" />
+        </div>
+
+        <div class="coalition-bar">
+          <div class="info">Coalition builder — tick lists below: <b id="coalitionSeats">0</b> / 720 seats selected</div>
+          <div class="row-actions">
+            <span class="coalition-status no" id="coalitionStatus">361 short of a majority</span>
+            <button class="btn ghost small" id="clearCoalitionBtn">Clear selection</button>
+          </div>
+        </div>
+
         <table>
           <thead>
             <tr>
+              <th style="width:30px"></th>
               <th>List</th>
               <th class="num">Result %</th>
+              <th class="num">Swing</th>
               <th class="num">Seats</th>
               <th class="num">Share of seats</th>
               <th>Threshold</th>
@@ -342,6 +423,21 @@
         </table>
         <div id="allianceBlocks"></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="history">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>Election history</h2>
+        <p class="note">Placeholder trend lines — swap in the real results whenever you have them. Discontinued parties simply stop partway across the chart.</p>
+      </div>
+    </div>
+    <div class="history-card">
+      <svg id="historySvg" viewBox="0 0 760 340" role="img" aria-label="Historical vote share by party"></svg>
+      <div class="history-legend" id="historyLegend"></div>
     </div>
   </div>
 </section>
@@ -397,7 +493,7 @@
   <div class="wrap">
     <div>
       <div class="brand-mini">Evropean Assembly Simulator</div>
-      <p class="cite">Seat totals, thresholds and the proportionality requirement follow Articles 79, 81 and 83 of the Constitution of the Evropean Union. All party names and results shown are placeholders.</p>
+      <p class="cite">Seat totals, thresholds and the proportionality requirement follow Articles 79, 81 and 83 of the Constitution of the Evropean Union. All party names, results and history figures shown are placeholders.</p>
     </div>
     <button class="btn ghost small" id="clearStorageBtn">Clear saved data</button>
   </div>
@@ -408,6 +504,7 @@
   "use strict";
 
   var STORAGE_KEY = "evropa-assembly-sim";
+  var THEME_KEY = "evropa-assembly-theme";
   var TOTAL_SEATS = 720;
   var MAJORITY = Math.floor(TOTAL_SEATS/2) + 1;
 
@@ -424,29 +521,50 @@
     return "rgba(" + r + "," + g + "," + b + ",0.06)";
   }
 
+  // ---------- Default data ----------
+
   function defaultState(){
     return {
       method: "sainte-lague",
       partyThreshold: 5,
       allianceThreshold: 7,
+      coalition: [],
       lists: [
-        { id: uid(), name: "Communist Coordination Committee of Socialist Parties", abbr: "CCCSP", color: "#f12315", type: "party", percent: 0.8, members: [] },
-        { id: uid(), name: "Arise!", abbr: "Arise!", color: "#fa4d40", type: "party", percent: 30.2, members: [] },
-        { id: uid(), name: "Social Progressive Cooperation", abbr: "SPC", color: "#7f9c7a", type: "party", percent: 18.1, members: [] },
-        { id: uid(), name: "Free Citizens Party", abbr: "FCP", color: "#feb700", type: "party", percent: 1.3, members: [] },
-        { id: uid(), name: "Evropa Harmony", abbr: "EvH", color: "#011e57", type: "party", percent: 24.9, members: [] },
-        { id: uid(), name: "Neo-Libertarian Movement", abbr: "ENLM", color: "#01925b", type: "party", percent: 9.8, members: [] },
-        { id: uid(), name: "Evropa for Evropeans Party", abbr: "EfEP", color: "#000000", type: "party", percent: 14.9, members: [] }
+        { id: uid(), name: "Communist Coordination Committee of Socialist Parties", abbr: "CCCSP", color: "#f12315", type: "party", percent: 0.8, previousPercent: 0.5, members: [] },
+        { id: uid(), name: "Arise!", abbr: "Arise!", color: "#fa4d40", type: "party", percent: 30.2, previousPercent: 29.5, members: [] },
+        { id: uid(), name: "Social Progressive Cooperation", abbr: "SPC", color: "#7f9c7a", type: "party", percent: 18.1, previousPercent: 17.4, members: [] },
+        { id: uid(), name: "Free Citizens Party", abbr: "FCP", color: "#feb700", type: "party", percent: 1.3, previousPercent: 1.3, members: [] },
+        { id: uid(), name: "Evropa Harmony", abbr: "EvH", color: "#011e57", type: "party", percent: 24.9, previousPercent: 25.9, members: [] },
+        { id: uid(), name: "Neo-Libertarian Movement", abbr: "ENLM", color: "#01925b", type: "party", percent: 9.8, previousPercent: 10.4, members: [] },
+        { id: uid(), name: "Evropa for Evropeans Party", abbr: "EfEP", color: "#000000", type: "party", percent: 14.9, previousPercent: 14.2, members: [] }
       ]
     };
   }
 
+  // Placeholder election-history dataset — independent of the live simulator state.
+  // Replace `elections` and each series' `values` with real per-election results.
+  // A `null` in `values` means that party did not contest / did not exist at that election.
+  var electionHistory = {
+    elections: ["Election 15", "Election 16", "Election 17", "Election 18 (current)"],
+    series: [
+      { name: "Arise! (incl. predecessors ER + Astra)", abbr: "Arise!", color: "#fa4d40", values: [22.4, 26.1, 29.5, 30.2] },
+      { name: "Evropa Harmony", abbr: "EvH", color: "#011e57", values: [29.1, 27.6, 25.9, 24.9] },
+      { name: "Social Progressive Cooperation", abbr: "SPC", color: "#7f9c7a", values: [14.8, 16.0, 17.4, 18.1] },
+      { name: "Evropa for Evropeans Party", abbr: "EfEP", color: "#000000", values: [10.2, 12.5, 14.2, 14.9] },
+      { name: "Neo-Libertarian Movement", abbr: "ENLM", color: "#01925b", values: [13.6, 11.9, 10.4, 9.8] },
+      { name: "Evropean Restoration (defunct, merged into Arise!)", abbr: "ER", color: "#c9a1a1", values: [16.9, 14.3, null, null] }
+    ]
+  };
+
   function loadState(){
+    var fromShare = readStateFromUrl();
+    if(fromShare) return fromShare;
     try{
       var raw = localStorage.getItem(STORAGE_KEY);
       if(!raw) return defaultState();
       var parsed = JSON.parse(raw);
       if(!parsed || !Array.isArray(parsed.lists) || !parsed.lists.length) return defaultState();
+      if(!Array.isArray(parsed.coalition)) parsed.coalition = [];
       return parsed;
     }catch(e){ return defaultState(); }
   }
@@ -456,6 +574,61 @@
   }
 
   var state = loadState();
+  var searchTerm = "";
+
+  // ---------- Share link encode/decode ----------
+
+  function utf8ToBase64(str){
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+  function base64ToUtf8(str){
+    return decodeURIComponent(escape(atob(str)));
+  }
+
+  function encodeStateForShare(){
+    var compact = {
+      method: state.method,
+      partyThreshold: state.partyThreshold,
+      allianceThreshold: state.allianceThreshold,
+      lists: state.lists.map(function(l){
+        return {
+          name: l.name, abbr: l.abbr, color: l.color, type: l.type,
+          percent: l.percent, previousPercent: l.previousPercent,
+          members: (l.members||[]).map(function(m){
+            return { name: m.name, abbr: m.abbr, weight: m.weight, previousPercent: m.previousPercent };
+          })
+        };
+      })
+    };
+    return utf8ToBase64(JSON.stringify(compact));
+  }
+
+  function readStateFromUrl(){
+    try{
+      var params = new URLSearchParams(window.location.search);
+      var raw = params.get("scenario");
+      if(!raw) return null;
+      var parsed = JSON.parse(base64ToUtf8(raw));
+      if(!parsed || !Array.isArray(parsed.lists)) return null;
+      parsed.coalition = [];
+      parsed.lists = parsed.lists.map(function(l){
+        l.id = uid();
+        l.previousPercent = (typeof l.previousPercent === "number") ? l.previousPercent : (l.percent||0);
+        l.members = (l.members||[]).map(function(m){
+          m.id = uid();
+          m.previousPercent = (typeof m.previousPercent === "number") ? m.previousPercent : 0;
+          return m;
+        });
+        return l;
+      });
+      return parsed;
+    }catch(e){ return null; }
+  }
+
+  function buildShareUrl(){
+    var base = window.location.origin + window.location.pathname;
+    return base + "?scenario=" + encodeURIComponent(encodeStateForShare());
+  }
 
   // ---------- Seat allocation methods ----------
 
@@ -475,13 +648,8 @@
     }
     return counts;
   }
-
-  function allocateSainteLague(weights, seats){
-    return allocateDivisor(weights, seats, function(c){ return 2*c + 1; });
-  }
-  function allocateDHondt(weights, seats){
-    return allocateDivisor(weights, seats, function(c){ return c + 1; });
-  }
+  function allocateSainteLague(weights, seats){ return allocateDivisor(weights, seats, function(c){ return 2*c + 1; }); }
+  function allocateDHondt(weights, seats){ return allocateDivisor(weights, seats, function(c){ return c + 1; }); }
   function allocateLargestRemainder(weights, seats){
     var totalWeight = weights.reduce(function(a,b){return a+b;}, 0);
     var n = weights.length;
@@ -504,11 +672,22 @@
     }
     return counts;
   }
-
   function allocate(method, weights, seats){
     if(method === "dhondt") return allocateDHondt(weights, seats);
     if(method === "largest-remainder") return allocateLargestRemainder(weights, seats);
     return allocateSainteLague(weights, seats);
+  }
+
+  // ---------- Swing ----------
+
+  function baselineOf(list){
+    if(list.type === "alliance"){
+      return (list.members||[]).reduce(function(sum, m){ return sum + (parseFloat(m.previousPercent)||0); }, 0);
+    }
+    return parseFloat(list.previousPercent) || 0;
+  }
+  function swingOf(list){
+    return (parseFloat(list.percent)||0) - baselineOf(list);
   }
 
   // ---------- Rendering: lists editor ----------
@@ -562,11 +741,12 @@
         typeSelect.appendChild(opt);
       });
       typeSelect.addEventListener("change", function(){
+        var priorBaseline = baselineOf(list);
         list.type = typeSelect.value;
         if(list.type === "alliance" && list.members.length === 0){
           list.members = [
-            { id: uid(), name: list.name + " 1", abbr: "M1", weight: 50 },
-            { id: uid(), name: list.name + " 2", abbr: "M2", weight: 50 }
+            { id: uid(), name: list.name + " 1", abbr: "M1", weight: 50, previousPercent: priorBaseline/2 },
+            { id: uid(), name: list.name + " 2", abbr: "M2", weight: 50, previousPercent: priorBaseline/2 }
           ];
         }
         renderAll();
@@ -588,6 +768,29 @@
       pctTd.appendChild(pctInput);
       tr.appendChild(pctTd);
 
+      var prevTd = document.createElement("td");
+      prevTd.className = "prev-cell num";
+      if(list.type === "alliance"){
+        var span = document.createElement("span");
+        span.style.color = "var(--ink-soft)";
+        span.style.fontSize = ".82rem";
+        span.textContent = baselineOf(list).toFixed(1) + "%*";
+        span.title = "Sum of member parties' Prev % below";
+        prevTd.appendChild(span);
+      } else {
+        var prevInput = document.createElement("input");
+        prevInput.type = "number";
+        prevInput.min = "0"; prevInput.max = "100"; prevInput.step = "0.1";
+        prevInput.value = (typeof list.previousPercent === "number") ? list.previousPercent : 0;
+        prevInput.addEventListener("input", function(){
+          list.previousPercent = parseFloat(prevInput.value) || 0;
+          renderResults();
+          saveState();
+        });
+        prevTd.appendChild(prevInput);
+      }
+      tr.appendChild(prevTd);
+
       var delTd = document.createElement("td");
       var delBtn = document.createElement("button");
       delBtn.className = "btn ghost icon small";
@@ -595,6 +798,7 @@
       delBtn.title = "Remove list";
       delBtn.addEventListener("click", function(){
         state.lists = state.lists.filter(function(l){ return l.id !== list.id; });
+        state.coalition = state.coalition.filter(function(id){ return id !== list.id; });
         renderAll();
       });
       delTd.appendChild(delBtn);
@@ -617,7 +821,7 @@
     var idx = state.lists.length + 1;
     state.lists.push({
       id: uid(), name: "List " + idx, abbr: "L" + idx,
-      color: palette[(idx-1) % palette.length], type: "party", percent: 0, members: []
+      color: palette[(idx-1) % palette.length], type: "party", percent: 0, previousPercent: 0, members: []
     });
     renderAll();
   });
@@ -644,6 +848,25 @@
 
   document.getElementById("calcBtn").addEventListener("click", function(){ renderResults(); saveState(); });
 
+  // ---------- Share button ----------
+
+  var shareBtn = document.getElementById("shareBtn");
+  var copyNote = document.getElementById("copyNote");
+  shareBtn.addEventListener("click", function(){
+    var url = buildShareUrl();
+    var showCopied = function(){
+      copyNote.classList.add("show");
+      setTimeout(function(){ copyNote.classList.remove("show"); }, 2000);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(showCopied, function(){
+        window.prompt("Copy this link:", url);
+      });
+    } else {
+      window.prompt("Copy this link:", url);
+    }
+  });
+
   // ---------- Configuration ----------
 
   var methodSelect = document.getElementById("methodSelect");
@@ -659,6 +882,34 @@
   methodSelect.addEventListener("change", function(){ state.method = methodSelect.value; renderResults(); saveState(); });
   partyThresholdInput.addEventListener("input", function(){ state.partyThreshold = parseFloat(partyThresholdInput.value) || 0; renderResults(); saveState(); });
   allianceThresholdInput.addEventListener("input", function(){ state.allianceThreshold = parseFloat(allianceThresholdInput.value) || 0; renderResults(); saveState(); });
+
+  // ---------- Search ----------
+
+  document.getElementById("resultsSearch").addEventListener("input", function(e){
+    searchTerm = (e.target.value || "").toLowerCase();
+    renderResults();
+  });
+
+  // ---------- Coalition builder ----------
+
+  document.getElementById("clearCoalitionBtn").addEventListener("click", function(){
+    state.coalition = [];
+    renderResults();
+    saveState();
+  });
+
+  function renderCoalitionBar(seatsById){
+    var total = state.coalition.reduce(function(sum, id){ return sum + (seatsById[id] || 0); }, 0);
+    document.getElementById("coalitionSeats").textContent = total;
+    var statusEl = document.getElementById("coalitionStatus");
+    if(total >= MAJORITY){
+      statusEl.textContent = "Majority reached (+" + (total - MAJORITY) + ")";
+      statusEl.className = "coalition-status yes";
+    } else {
+      statusEl.textContent = (MAJORITY - total) + " short of a majority";
+      statusEl.className = "coalition-status no";
+    }
+  }
 
   // ---------- Results ----------
 
@@ -676,14 +927,51 @@
     return seatsById;
   }
 
+  function renderSwingCell(list){
+    var td = document.createElement("td");
+    td.className = "num";
+    var swing = swingOf(list);
+    var span = document.createElement("span");
+    span.className = "swing " + (swing > 0.05 ? "swing-up" : swing < -0.05 ? "swing-down" : "swing-flat");
+    var arrow = swing > 0.05 ? "▲" : swing < -0.05 ? "▼" : "–";
+    span.textContent = arrow + " " + Math.abs(swing).toFixed(1);
+    td.appendChild(span);
+    return td;
+  }
+
+  function matchesSearch(list){
+    if(!searchTerm) return true;
+    return list.name.toLowerCase().indexOf(searchTerm) !== -1 ||
+           list.abbr.toLowerCase().indexOf(searchTerm) !== -1;
+  }
+
   function renderResultsTable(seatsById){
     resultsBody.innerHTML = "";
     state.lists.forEach(function(list){
+      if(!matchesSearch(list)) return;
+
       var seats = seatsById[list.id] || 0;
       var threshold = list.type === "alliance" ? state.allianceThreshold : state.partyThreshold;
       var passed = (parseFloat(list.percent)||0) >= threshold;
 
       var tr = document.createElement("tr");
+
+      var checkTd = document.createElement("td");
+      checkTd.className = "check-cell";
+      var check = document.createElement("input");
+      check.type = "checkbox";
+      check.checked = state.coalition.indexOf(list.id) !== -1;
+      check.addEventListener("change", function(){
+        if(check.checked){
+          if(state.coalition.indexOf(list.id) === -1) state.coalition.push(list.id);
+        } else {
+          state.coalition = state.coalition.filter(function(id){ return id !== list.id; });
+        }
+        renderCoalitionBar(computeSeats());
+        saveState();
+      });
+      checkTd.appendChild(check);
+      tr.appendChild(checkTd);
 
       var nameTd = document.createElement("td");
       var dot = document.createElement("span");
@@ -697,6 +985,8 @@
       pctTd.className = "num";
       pctTd.textContent = (parseFloat(list.percent)||0).toFixed(2) + "%";
       tr.appendChild(pctTd);
+
+      tr.appendChild(renderSwingCell(list));
 
       var seatsTd = document.createElement("td");
       seatsTd.className = "num";
@@ -737,14 +1027,47 @@
 
       var table = document.createElement("table");
       var thead = document.createElement("thead");
-      thead.innerHTML = "<tr><th>Member party</th><th class=\"num\">Weight</th><th class=\"num\">Seats</th></tr>";
+      thead.innerHTML = "<tr><th>Member party</th><th class=\"num\">Weight</th><th class=\"num prev-cell-h\">Prev %</th><th class=\"num\">Seats</th></tr>";
       table.appendChild(thead);
       var tbody = document.createElement("tbody");
       list.members.forEach(function(m, i){
         var tr = document.createElement("tr");
-        tr.innerHTML = "<td>" + m.name + " (" + m.abbr + ")</td>" +
-          "<td class=\"num\">" + m.weight + "</td>" +
-          "<td class=\"num\">" + memberSeats[i] + "</td>";
+
+        var nameTd = document.createElement("td");
+        nameTd.textContent = m.name + " (" + m.abbr + ")";
+        tr.appendChild(nameTd);
+
+        var weightTd = document.createElement("td");
+        weightTd.className = "num";
+        var weightInput = document.createElement("input");
+        weightInput.type = "number"; weightInput.min = "0"; weightInput.step = "1";
+        weightInput.value = m.weight;
+        weightInput.style.width = "60px"; weightInput.style.textAlign = "right";
+        weightInput.addEventListener("input", function(){
+          m.weight = parseFloat(weightInput.value) || 0;
+          renderResults(); saveState();
+        });
+        weightTd.appendChild(weightInput);
+        tr.appendChild(weightTd);
+
+        var prevTd = document.createElement("td");
+        prevTd.className = "num";
+        var prevInput = document.createElement("input");
+        prevInput.type = "number"; prevInput.min = "0"; prevInput.step = "0.1";
+        prevInput.value = (typeof m.previousPercent === "number") ? m.previousPercent : 0;
+        prevInput.style.width = "60px"; prevInput.style.textAlign = "right";
+        prevInput.addEventListener("input", function(){
+          m.previousPercent = parseFloat(prevInput.value) || 0;
+          renderResults(); saveState();
+        });
+        prevTd.appendChild(prevInput);
+        tr.appendChild(prevTd);
+
+        var seatsTd = document.createElement("td");
+        seatsTd.className = "num";
+        seatsTd.textContent = memberSeats[i];
+        tr.appendChild(seatsTd);
+
         tbody.appendChild(tr);
       });
       table.appendChild(tbody);
@@ -773,12 +1096,11 @@
     return positions;
   }
 
-  function renderHemicycle(svgEl, seatColors, ghost){
+  function renderHemicycle(svgEl, seatColors){
     var total = seatColors.length;
     var positions = buildHemicycleSeatOrder(total);
     var cx = 380, cy = 380;
     var frag = document.createDocumentFragment();
-    var seatR = ghost ? 3.6 : 5.4;
     positions.forEach(function(pos, i){
       var rad = pos.theta * Math.PI / 180;
       var x = cx + pos.r * Math.cos(rad);
@@ -786,25 +1108,13 @@
       var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
       circle.setAttribute("cx", x.toFixed(1));
       circle.setAttribute("cy", y.toFixed(1));
-      circle.setAttribute("r", seatR);
+      circle.setAttribute("r", 5.4);
       circle.setAttribute("class", "seat");
-      circle.setAttribute("fill", ghost ? "var(--line)" : (seatColors[i] || "#999"));
+      circle.setAttribute("fill", seatColors[i] || "#999");
       frag.appendChild(circle);
     });
     svgEl.innerHTML = "";
     svgEl.appendChild(frag);
-  }
-
-  function renderHeroGhost(){
-    var container = document.getElementById("heroHemi");
-    var svgNs = "http://www.w3.org/2000/svg";
-    var svg = document.createElementNS(svgNs, "svg");
-    svg.setAttribute("viewBox", "0 0 760 420");
-    svg.setAttribute("width", "100%");
-    svg.setAttribute("height", "auto");
-    container.innerHTML = "";
-    container.appendChild(svg);
-    renderHemicycle(svg, new Array(TOTAL_SEATS).fill(null), true);
   }
 
   function renderLegend(seatsById){
@@ -831,6 +1141,7 @@
     renderResultsTable(seatsById);
     renderAllianceBlocks(seatsById);
     renderLegend(seatsById);
+    renderCoalitionBar(seatsById);
 
     var seatColors = [];
     state.lists.forEach(function(list){
@@ -840,8 +1151,134 @@
     while(seatColors.length < TOTAL_SEATS) seatColors.push("#e4ded0");
 
     var svgEl = document.getElementById("hemiSvg");
-    renderHemicycle(svgEl, seatColors, false);
+    renderHemicycle(svgEl, seatColors);
   }
+
+  // ---------- Election history chart ----------
+
+  function renderHistoryChart(){
+    var svg = document.getElementById("historySvg");
+    var legendEl = document.getElementById("historyLegend");
+    var W = 760, H = 340;
+    var padL = 36, padR = 16, padT = 16, padB = 30;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+
+    var elections = electionHistory.elections;
+    var series = electionHistory.series;
+    var maxVal = 0;
+    series.forEach(function(s){
+      s.values.forEach(function(v){ if(typeof v === "number" && v > maxVal) maxVal = v; });
+    });
+    maxVal = Math.ceil((maxVal + 2) / 5) * 5;
+
+    var xStep = elections.length > 1 ? plotW / (elections.length - 1) : 0;
+    function xFor(i){ return padL + i * xStep; }
+    function yFor(v){ return padT + plotH - (v / maxVal) * plotH; }
+
+    var svgNs = "http://www.w3.org/2000/svg";
+    var frag = document.createDocumentFragment();
+
+    // gridlines + y labels
+    var gridSteps = 4;
+    for(var g=0; g<=gridSteps; g++){
+      var val = (maxVal / gridSteps) * g;
+      var y = yFor(val);
+      var line = document.createElementNS(svgNs, "line");
+      line.setAttribute("x1", padL); line.setAttribute("x2", W - padR);
+      line.setAttribute("y1", y.toFixed(1)); line.setAttribute("y2", y.toFixed(1));
+      line.setAttribute("class", "gridline");
+      frag.appendChild(line);
+
+      var label = document.createElementNS(svgNs, "text");
+      label.setAttribute("x", padL - 6); label.setAttribute("y", (y+3).toFixed(1));
+      label.setAttribute("text-anchor", "end");
+      label.setAttribute("class", "axis-label");
+      label.textContent = Math.round(val) + "%";
+      frag.appendChild(label);
+    }
+
+    // x labels
+    elections.forEach(function(label, i){
+      var x = xFor(i);
+      var text = document.createElementNS(svgNs, "text");
+      text.setAttribute("x", x.toFixed(1)); text.setAttribute("y", H - 8);
+      text.setAttribute("text-anchor", "middle");
+      text.setAttribute("class", "axis-label");
+      text.textContent = label;
+      frag.appendChild(text);
+    });
+
+    // series lines
+    series.forEach(function(s){
+      var pathParts = [];
+      s.values.forEach(function(v, i){
+        if(typeof v !== "number"){ pathParts.push(null); return; }
+        pathParts.push([xFor(i), yFor(v)]);
+      });
+
+      var d = "";
+      var drawing = false;
+      pathParts.forEach(function(pt){
+        if(pt === null){ drawing = false; return; }
+        d += (drawing ? "L" : "M") + pt[0].toFixed(1) + "," + pt[1].toFixed(1) + " ";
+        drawing = true;
+      });
+      if(d){
+        var path = document.createElementNS(svgNs, "path");
+        path.setAttribute("d", d.trim());
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", s.color);
+        path.setAttribute("stroke-width", "2.5");
+        path.setAttribute("stroke-linecap", "round");
+        path.setAttribute("stroke-linejoin", "round");
+        frag.appendChild(path);
+      }
+
+      pathParts.forEach(function(pt){
+        if(pt === null) return;
+        var c = document.createElementNS(svgNs, "circle");
+        c.setAttribute("cx", pt[0].toFixed(1)); c.setAttribute("cy", pt[1].toFixed(1));
+        c.setAttribute("r", 3.4);
+        c.setAttribute("fill", s.color);
+        frag.appendChild(c);
+      });
+    });
+
+    svg.innerHTML = "";
+    svg.appendChild(frag);
+
+    legendEl.innerHTML = "";
+    series.forEach(function(s){
+      var item = document.createElement("div");
+      item.className = "legend-item";
+      var chip = document.createElement("span");
+      chip.className = "chip";
+      chip.style.background = s.color;
+      item.appendChild(chip);
+      var label = document.createElement("span");
+      label.textContent = s.name;
+      item.appendChild(label);
+      legendEl.appendChild(item);
+    });
+  }
+
+  // ---------- Theme ----------
+
+  var themeToggle = document.getElementById("themeToggle");
+  function applyTheme(theme){
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    themeToggle.textContent = theme === "dark" ? "Light mode" : "Dark mode";
+  }
+  function currentTheme(){
+    try{ return localStorage.getItem(THEME_KEY) || "light"; }catch(e){ return "light"; }
+  }
+  themeToggle.addEventListener("click", function(){
+    var next = currentTheme() === "dark" ? "light" : "dark";
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+    applyTheme(next);
+  });
+
+  // ---------- Boot ----------
 
   function renderAll(){
     renderListsEditor();
@@ -849,9 +1286,10 @@
     saveState();
   }
 
+  applyTheme(currentTheme());
   applyConfigToInputs();
-  renderHeroGhost();
   renderAll();
+  renderHistoryChart();
 
 })();
 </script>
