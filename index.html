@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Evropean Assembly Simulator</title>
+<meta name="description" content="Interactive seat-allocation simulator for the Evropean Assembly" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+  :root{
+    --paper: #efeae0;
+    --paper-raised: #f7f4ec;
+    --ink: #1e1b16;
+    --ink-soft: #55503f;
+    --navy: #1b2a4a;
+    --navy-soft: #2c3d63;
+    --gold: #a9812e;
+    --gold-soft: #cba75c;
+    --line: #c9c0ae;
+    --line-soft: #ddd6c5;
+    --teal: #3e6259;
+    --danger: #97402f;
+    --radius: 3px;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a{ color: inherit; }
+  h1,h2,h3{ font-family: var(--serif); font-weight:600; margin:0; color: var(--navy); }
+  button{ font-family: var(--sans); cursor:pointer; }
+  input, select{ font-family: var(--sans); }
+
+  .wrap{ max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+
+  /* Header */
+  header{
+    position: sticky; top:0; z-index: 50;
+    background: var(--navy);
+    color: var(--paper);
+    border-bottom: 3px solid var(--gold);
+  }
+  header .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height: 64px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand .mark{
+    font-family: var(--serif); font-weight:700; font-size: 1.25rem; letter-spacing: .01em;
+  }
+  .brand .sub{ font-size: .78rem; color: var(--gold-soft); }
+  nav{ display:flex; gap: 22px; }
+  nav a{
+    text-decoration:none; font-size: .92rem; color: var(--paper); opacity:.82;
+    border-bottom: 2px solid transparent; padding-bottom: 3px;
+  }
+  nav a:hover{ opacity:1; border-color: var(--gold); }
+
+  /* Hero */
+  .hero{
+    padding: 64px 0 48px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero .grid{
+    display:grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items:center;
+  }
+  .hero h1{
+    font-size: clamp(2rem, 3.4vw, 2.9rem);
+    line-height:1.12;
+    max-width: 15ch;
+  }
+  .hero p.lede{
+    margin-top:16px; max-width: 46ch; color: var(--ink-soft); font-size: 1.02rem;
+  }
+  .facts{
+    margin-top: 30px; display:flex; gap: 0; border-top:1px solid var(--line-soft);
+  }
+  .fact{
+    flex:1; padding: 14px 18px 0 0; border-right: 1px solid var(--line-soft);
+  }
+  .fact:last-child{ border-right:none; }
+  .fact .n{ font-family: var(--serif); font-size: 1.7rem; color:var(--navy); font-variant-numeric: tabular-nums; }
+  .fact .l{ font-size: .8rem; color: var(--ink-soft); margin-top:2px; }
+
+  .hemi-ghost{ opacity:.9; }
+  .hemi-ghost circle.seat{ fill: var(--line); }
+
+  /* Sections */
+  section{ padding: 56px 0; border-bottom: 1px solid var(--line); }
+  section.last{ border-bottom:none; }
+  .section-head{ display:flex; justify-content:space-between; align-items:flex-end; gap: 24px; margin-bottom: 26px; flex-wrap:wrap; }
+  .section-head h2{ font-size: 1.5rem; }
+  .section-head .note{ font-size: .88rem; color: var(--ink-soft); max-width: 42ch; }
+
+  /* Buttons */
+  .btn{
+    border:1px solid var(--navy); background: transparent; color: var(--navy);
+    padding: 9px 16px; border-radius: var(--radius); font-size: .88rem; font-weight:500;
+    transition: background .15s, color .15s;
+  }
+  .btn:hover{ background: var(--navy); color: var(--paper); }
+  .btn.primary{ background: var(--navy); color: var(--paper); }
+  .btn.primary:hover{ background: var(--navy-soft); }
+  .btn.gold{ border-color: var(--gold); color: var(--gold); }
+  .btn.gold:hover{ background: var(--gold); color: var(--paper); }
+  .btn.ghost{ border-color: var(--line); color: var(--ink-soft); }
+  .btn.ghost:hover{ background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn.small{ padding: 5px 10px; font-size: .78rem; }
+  .btn.icon{ padding: 5px 9px; }
+  .btn[disabled]{ opacity:.4; cursor:not-allowed; }
+  .btn[disabled]:hover{ background:transparent; color:var(--navy); }
+
+  .row-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+
+  /* Table */
+  table{ width:100%; border-collapse: collapse; }
+  th{
+    text-align:left; font-size: .76rem; color: var(--ink-soft); font-weight:600;
+    padding: 0 10px 8px; border-bottom: 1px solid var(--line);
+  }
+  td{ padding: 9px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+  tr.total-row td{ border-bottom:none; border-top: 2px solid var(--ink); font-weight:600; padding-top:12px; }
+  .num{ font-variant-numeric: tabular-nums; text-align:right; }
+
+  .swatch{ width:20px; height:20px; border-radius:50%; border:1px solid rgba(0,0,0,.25); display:inline-block; padding:0; }
+  input[type=color]{ -webkit-appearance:none; border:none; background:none; }
+  input[type=color]::-webkit-color-swatch-wrapper{ padding:0; }
+  input[type=color]::-webkit-color-swatch{ border-radius:50%; border:1px solid rgba(0,0,0,.25); }
+
+  input[type=text], input[type=number]{
+    border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink);
+    padding: 6px 8px; border-radius: var(--radius); font-size: .88rem; width: 100%;
+  }
+  input[type=text]:focus, input[type=number]:focus, select:focus{
+    outline: 2px solid var(--gold-soft); outline-offset:1px;
+  }
+  select{
+    border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink);
+    padding: 6px 8px; border-radius: var(--radius); font-size: .85rem;
+  }
+  td.name-cell input{ min-width: 140px; }
+  td.abbr-cell input{ width: 64px; }
+  td.pct-cell input{ width: 72px; text-align:right; }
+  td.type-cell select{ width: 100%; }
+
+  .badge{
+    display:inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 999px; font-weight:600;
+  }
+  .badge.pass{ background: #dfe8db; color: #33532d; }
+  .badge.fail{ background: #f0ddd7; color: var(--danger); }
+
+  .total-line{ display:flex; align-items:center; gap:14px; margin-top: 16px; flex-wrap:wrap; }
+  .total-line .amount{ font-family: var(--serif); font-size:1.1rem; }
+  .total-line .amount.off{ color: var(--danger); }
+
+  /* Hemicycle + results layout */
+  .results-grid{ display:grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items:start; }
+  .hemi-card{
+    background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius);
+    padding: 18px 18px 8px;
+  }
+  .hemi-card svg{ width:100%; height:auto; display:block; }
+  .majority-note{ text-align:center; font-size: .82rem; color: var(--ink-soft); margin-top: -4px; padding-bottom: 12px; }
+
+  .alliance-block{ margin-top: 18px; border:1px dashed var(--line); border-radius: var(--radius); padding: 12px 14px; }
+  .alliance-block summary{ cursor:pointer; font-size: .88rem; font-weight:600; color: var(--navy); }
+  .alliance-block table{ margin-top: 12px; }
+
+  /* Regions placeholder */
+  .stub{
+    border: 1px dashed var(--line); border-radius: var(--radius); padding: 32px;
+    text-align:center; color: var(--ink-soft); background: var(--paper-raised);
+  }
+  .stub .glyphs{ display:flex; justify-content:center; gap:10px; margin-bottom:16px; }
+  .stub .glyphs span{ width:34px; height:34px; border:1px solid var(--line); border-radius:50%; }
+
+  /* Config */
+  .config-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field label{ font-size: .8rem; color: var(--ink-soft); }
+  .field .help{ font-size: .74rem; color: var(--ink-soft); opacity:.85; }
+
+  footer{ padding: 32px 0 60px; }
+  footer .wrap{ display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap; }
+  footer .cite{ font-size: .78rem; color: var(--ink-soft); max-width: 52ch; }
+  footer .brand-mini{ font-family: var(--serif); font-weight:600; color: var(--navy); }
+
+  @media (max-width: 860px){
+    .hero .grid{ grid-template-columns: 1fr; }
+    .results-grid{ grid-template-columns: 1fr; }
+    .config-grid{ grid-template-columns: 1fr; }
+    nav{ display:none; }
+    .facts{ flex-wrap:wrap; }
+    .fact{ flex: 1 1 45%; border-right:none; padding-top:14px; border-top:1px solid var(--line-soft); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <span class="mark">Evropean Assembly Simulator</span>
+      <span class="sub">Constitution, Art. 79 &amp; 81</span>
+    </div>
+    <nav>
+      <a href="#lists">Electoral lists</a>
+      <a href="#results">Seat composition</a>
+      <a href="#regions">Regions</a>
+      <a href="#config">Configuration</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap grid">
+    <div>
+      <h1>From one Evropa-wide result to all 720 seats of the Assembly.</h1>
+      <p class="lede">Enter the national result of each list, and the simulator applies the electoral threshold and seat formula set out in the Constitution to fill the Evropean Assembly.</p>
+      <div class="facts">
+        <div class="fact"><div class="n">720</div><div class="l">Assembly seats · Art. 79</div></div>
+        <div class="fact"><div class="n">5% / 7%</div><div class="l">Threshold, party / alliance · Art. 81</div></div>
+        <div class="fact"><div class="n">361</div><div class="l">Seats for a majority</div></div>
+      </div>
+    </div>
+    <div class="hemi-ghost" id="heroHemi" aria-hidden="true"></div>
+  </div>
+</section>
+
+<section id="lists">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>Electoral lists</h2>
+        <p class="note">These percentages fix the Evropa-wide result of each list. Mark a list as an alliance to split its seats among member parties afterwards.</p>
+      </div>
+      <div class="row-actions">
+        <button class="btn" id="addListBtn">+ Add list</button>
+        <button class="btn ghost" id="resetBtn">Reset to placeholders</button>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width:36px"></th>
+          <th>Name</th>
+          <th>Abbr.</th>
+          <th>Type</th>
+          <th class="num">Result %</th>
+          <th style="width:36px"></th>
+        </tr>
+      </thead>
+      <tbody id="listsBody"></tbody>
+      <tfoot>
+        <tr class="total-row">
+          <td colspan="4">Entered total</td>
+          <td class="num" id="totalPct">0.00%</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="total-line">
+      <span class="amount" id="totalAmount">0.00%</span>
+      <button class="btn small" id="normaliseBtn">Normalise to 100%</button>
+      <button class="btn primary" id="calcBtn">Calculate</button>
+    </div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>Evropean Assembly</h2>
+        <p class="note">Seats are allocated only to lists that clear the electoral threshold, using the method chosen in Configuration.</p>
+      </div>
+    </div>
+
+    <div class="results-grid">
+      <div class="hemi-card">
+        <svg id="hemiSvg" viewBox="0 0 760 420" role="img" aria-label="Seat composition of the Evropean Assembly"></svg>
+        <div class="majority-note">Majority line at 361 seats</div>
+      </div>
+
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>List</th>
+              <th class="num">Result %</th>
+              <th class="num">Seats</th>
+              <th class="num">Share of seats</th>
+              <th>Threshold</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+        <div id="allianceBlocks"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="regions">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>Regional breakdown</h2>
+        <p class="note">The Constitution leaves the number and shape of Evropa's regions to be settled separately from the seat formula itself.</p>
+      </div>
+    </div>
+    <div class="stub">
+      <div class="glyphs"><span></span><span></span><span></span><span></span></div>
+      <p>Regional and Senate results aren't modelled yet. This simulator currently covers the 720-seat Assembly only — regions, provinces and the Senate can be added once that structure is settled.</p>
+    </div>
+  </div>
+</section>
+
+<section id="config" class="last">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>Configuration</h2>
+        <p class="note">Changes here recalculate the simulation immediately.</p>
+      </div>
+    </div>
+    <div class="config-grid">
+      <div class="field">
+        <label for="methodSelect">Seat allocation method</label>
+        <select id="methodSelect">
+          <option value="sainte-lague">Sainte-Laguë</option>
+          <option value="dhondt">D'Hondt</option>
+          <option value="largest-remainder">Largest remainder (Hare quota)</option>
+        </select>
+        <span class="help">The Constitution requires a proportional result (Art. 83) but doesn't fix a formula.</span>
+      </div>
+      <div class="field">
+        <label for="partyThreshold">Party threshold (%)</label>
+        <input type="number" id="partyThreshold" value="5" min="0" max="100" step="0.5" />
+        <span class="help">Art. 81(2): five percent for a single party.</span>
+      </div>
+      <div class="field">
+        <label for="allianceThreshold">Alliance threshold (%)</label>
+        <input type="number" id="allianceThreshold" value="7" min="0" max="100" step="0.5" />
+        <span class="help">Art. 81(2): seven percent for an alliance of two or more parties.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="brand-mini">Evropean Assembly Simulator</div>
+      <p class="cite">Seat totals, thresholds and the proportionality requirement follow Articles 79, 81 and 83 of the Constitution of the Evropean Union. All party names and results shown are placeholders.</p>
+    </div>
+    <button class="btn ghost small" id="clearStorageBtn">Clear saved data</button>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "evropa-assembly-sim";
+  var TOTAL_SEATS = 720;
+  var MAJORITY = Math.floor(TOTAL_SEATS/2) + 1;
+
+  var palette = ["#8a3b3b","#4a5f8a","#c17f3a","#5f6b34","#c9a227","#8a8a8a","#5c1f1f"];
+
+  function uid(){ return Math.random().toString(36).slice(2,9); }
+
+  function defaultState(){
+    return {
+      method: "sainte-lague",
+      partyThreshold: 5,
+      allianceThreshold: 7,
+      lists: [
+        { id: uid(), name: "Arise!", abbr: "Arise!", color: palette[0], type: "party", percent: 30.2, members: [] },
+        { id: uid(), name: "Evropa Harmony", abbr: "EvH", color: palette[1], type: "party", percent: 24.9, members: [] },
+        { id: uid(), name: "Social Progressive Cooperation", abbr: "SPC", color: palette[2], type: "party", percent: 18.1, members: [] },
+        { id: uid(), name: "Evropa for Evropeans Party", abbr: "EfEP", color: palette[3], type: "party", percent: 14.9, members: [] },
+        { id: uid(), name: "Neo-Libertarian Movement", abbr: "ENLM", color: palette[4], type: "party", percent: 9.8, members: [] },
+        { id: uid(), name: "Other (incl. FCP)", abbr: "Other", color: palette[5], type: "party", percent: 1.3, members: [] },
+        { id: uid(), name: "Communist Party (CCCSP)", abbr: "CCCSP", color: palette[6], type: "party", percent: 0.8, members: [] }
+      ]
+    };
+  }
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return defaultState();
+      var parsed = JSON.parse(raw);
+      if(!parsed || !Array.isArray(parsed.lists) || !parsed.lists.length) return defaultState();
+      return parsed;
+    }catch(e){ return defaultState(); }
+  }
+
+  function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){ /* ignore */ }
+  }
+
+  var state = loadState();
+
+  // ---------- Seat allocation methods ----------
+
+  function allocateDivisor(weights, seats, divisorFn){
+    var n = weights.length;
+    var counts = new Array(n).fill(0);
+    if(seats <= 0 || n === 0) return counts;
+    for(var s=0; s<seats; s++){
+      var bestIdx = -1, bestVal = -1;
+      for(var i=0;i<n;i++){
+        if(weights[i] <= 0) continue;
+        var val = weights[i] / divisorFn(counts[i]);
+        if(val > bestVal){ bestVal = val; bestIdx = i; }
+      }
+      if(bestIdx === -1) break;
+      counts[bestIdx]++;
+    }
+    return counts;
+  }
+
+  function allocateSainteLague(weights, seats){
+    return allocateDivisor(weights, seats, function(c){ return 2*c + 1; });
+  }
+  function allocateDHondt(weights, seats){
+    return allocateDivisor(weights, seats, function(c){ return c + 1; });
+  }
+  function allocateLargestRemainder(weights, seats){
+    var totalWeight = weights.reduce(function(a,b){return a+b;}, 0);
+    var n = weights.length;
+    var counts = new Array(n).fill(0);
+    if(totalWeight <= 0 || seats <= 0) return counts;
+    var quota = totalWeight / seats;
+    var remainders = [];
+    var assigned = 0;
+    for(var i=0;i<n;i++){
+      var raw = weights[i] / quota;
+      var whole = Math.floor(raw);
+      counts[i] = whole;
+      assigned += whole;
+      remainders.push({ idx:i, frac: raw - whole });
+    }
+    remainders.sort(function(a,b){ return b.frac - a.frac; });
+    var remaining = seats - assigned;
+    for(var r=0; r<remaining && r<remainders.length; r++){
+      counts[remainders[r].idx]++;
+    }
+    return counts;
+  }
+
+  function allocate(method, weights, seats){
+    if(method === "dhondt") return allocateDHondt(weights, seats);
+    if(method === "largest-remainder") return allocateLargestRemainder(weights, seats);
+    return allocateSainteLague(weights, seats);
+  }
+
+  // ---------- Rendering: lists editor ----------
+
+  var listsBody = document.getElementById("listsBody");
+  var totalPctEl = document.getElementById("totalPct");
+  var totalAmountEl = document.getElementById("totalAmount");
+
+  function renderListsEditor(){
+    listsBody.innerHTML = "";
+    state.lists.forEach(function(list){
+      var tr = document.createElement("tr");
+
+      var swatchTd = document.createElement("td");
+      var colorInput = document.createElement("input");
+      colorInput.type = "color";
+      colorInput.className = "swatch";
+      colorInput.value = list.color;
+      colorInput.addEventListener("input", function(){ list.color = colorInput.value; renderAll(); });
+      swatchTd.appendChild(colorInput);
+      tr.appendChild(swatchTd);
+
+      var nameTd = document.createElement("td");
+      nameTd.className = "name-cell";
+      var nameInput = document.createElement("input");
+      nameInput.type = "text";
+      nameInput.value = list.name;
+      nameInput.addEventListener("input", function(){ list.name = nameInput.value; renderResults(); saveState(); });
+      nameTd.appendChild(nameInput);
+      tr.appendChild(nameTd);
+
+      var abbrTd = document.createElement("td");
+      abbrTd.className = "abbr-cell";
+      var abbrInput = document.createElement("input");
+      abbrInput.type = "text";
+      abbrInput.value = list.abbr;
+      abbrInput.addEventListener("input", function(){ list.abbr = abbrInput.value; renderResults(); saveState(); });
+      abbrTd.appendChild(abbrInput);
+      tr.appendChild(abbrTd);
+
+      var typeTd = document.createElement("td");
+      typeTd.className = "type-cell";
+      var typeSelect = document.createElement("select");
+      ["party","alliance"].forEach(function(t){
+        var opt = document.createElement("option");
+        opt.value = t; opt.textContent = t === "party" ? "Party" : "Alliance";
+        if(list.type === t) opt.selected = true;
+        typeSelect.appendChild(opt);
+      });
+      typeSelect.addEventListener("change", function(){
+        list.type = typeSelect.value;
+        if(list.type === "alliance" && list.members.length === 0){
+          list.members = [
+            { id: uid(), name: list.name + " 1", abbr: "M1", weight: 50 },
+            { id: uid(), name: list.name + " 2", abbr: "M2", weight: 50 }
+          ];
+        }
+        renderAll();
+      });
+      typeTd.appendChild(typeSelect);
+      tr.appendChild(typeTd);
+
+      var pctTd = document.createElement("td");
+      pctTd.className = "pct-cell num";
+      var pctInput = document.createElement("input");
+      pctInput.type = "number";
+      pctInput.min = "0"; pctInput.max = "100"; pctInput.step = "0.1";
+      pctInput.value = list.percent;
+      pctInput.addEventListener("input", function(){
+        list.percent = parseFloat(pctInput.value) || 0;
+        updateTotals();
+        saveState();
+      });
+      pctTd.appendChild(pctInput);
+      tr.appendChild(pctTd);
+
+      var delTd = document.createElement("td");
+      var delBtn = document.createElement("button");
+      delBtn.className = "btn ghost icon small";
+      delBtn.textContent = "×";
+      delBtn.title = "Remove list";
+      delBtn.addEventListener("click", function(){
+        state.lists = state.lists.filter(function(l){ return l.id !== list.id; });
+        renderAll();
+      });
+      delTd.appendChild(delBtn);
+      tr.appendChild(delTd);
+
+      listsBody.appendChild(tr);
+    });
+    updateTotals();
+  }
+
+  function updateTotals(){
+    var total = state.lists.reduce(function(a,l){ return a + (parseFloat(l.percent)||0); }, 0);
+    var text = total.toFixed(2) + "%";
+    totalPctEl.textContent = text;
+    totalAmountEl.textContent = "Entered total " + text;
+    totalAmountEl.className = "amount" + (Math.abs(total-100) > 0.05 ? " off" : "");
+  }
+
+  document.getElementById("addListBtn").addEventListener("click", function(){
+    var idx = state.lists.length + 1;
+    state.lists.push({
+      id: uid(), name: "List " + idx, abbr: "L" + idx,
+      color: palette[(idx-1) % palette.length], type: "party", percent: 0, members: []
+    });
+    renderAll();
+  });
+
+  document.getElementById("normaliseBtn").addEventListener("click", function(){
+    var total = state.lists.reduce(function(a,l){ return a + (parseFloat(l.percent)||0); }, 0);
+    if(total <= 0) return;
+    state.lists.forEach(function(l){ l.percent = Math.round((l.percent / total) * 10000) / 100; });
+    renderAll();
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    state = defaultState();
+    applyConfigToInputs();
+    renderAll();
+  });
+
+  document.getElementById("clearStorageBtn").addEventListener("click", function(){
+    try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+    state = defaultState();
+    applyConfigToInputs();
+    renderAll();
+  });
+
+  document.getElementById("calcBtn").addEventListener("click", function(){ renderResults(); saveState(); });
+
+  // ---------- Configuration ----------
+
+  var methodSelect = document.getElementById("methodSelect");
+  var partyThresholdInput = document.getElementById("partyThreshold");
+  var allianceThresholdInput = document.getElementById("allianceThreshold");
+
+  function applyConfigToInputs(){
+    methodSelect.value = state.method;
+    partyThresholdInput.value = state.partyThreshold;
+    allianceThresholdInput.value = state.allianceThreshold;
+  }
+
+  methodSelect.addEventListener("change", function(){ state.method = methodSelect.value; renderResults(); saveState(); });
+  partyThresholdInput.addEventListener("input", function(){ state.partyThreshold = parseFloat(partyThresholdInput.value) || 0; renderResults(); saveState(); });
+  allianceThresholdInput.addEventListener("input", function(){ state.allianceThreshold = parseFloat(allianceThresholdInput.value) || 0; renderResults(); saveState(); });
+
+  // ---------- Results ----------
+
+  var resultsBody = document.getElementById("resultsBody");
+  var allianceBlocksEl = document.getElementById("allianceBlocks");
+
+  function computeSeats(){
+    var thresholdOf = function(list){ return list.type === "alliance" ? state.allianceThreshold : state.partyThreshold; };
+    var qualifying = state.lists.filter(function(l){ return (parseFloat(l.percent)||0) >= thresholdOf(l); });
+    var weights = qualifying.map(function(l){ return parseFloat(l.percent) || 0; });
+    var seatCounts = allocate(state.method, weights, TOTAL_SEATS);
+    var seatsById = {};
+    qualifying.forEach(function(l, i){ seatsById[l.id] = seatCounts[i]; });
+    state.lists.forEach(function(l){ if(!(l.id in seatsById)) seatsById[l.id] = 0; });
+    return seatsById;
+  }
+
+  function renderResultsTable(seatsById){
+    resultsBody.innerHTML = "";
+    state.lists.forEach(function(list){
+      var seats = seatsById[list.id] || 0;
+      var threshold = list.type === "alliance" ? state.allianceThreshold : state.partyThreshold;
+      var passed = (parseFloat(list.percent)||0) >= threshold;
+
+      var tr = document.createElement("tr");
+
+      var nameTd = document.createElement("td");
+      var dot = document.createElement("span");
+      dot.style.display = "inline-block"; dot.style.width="10px"; dot.style.height="10px";
+      dot.style.borderRadius="50%"; dot.style.background = list.color; dot.style.marginRight="8px";
+      nameTd.appendChild(dot);
+      nameTd.appendChild(document.createTextNode(list.name + " (" + list.abbr + ")"));
+      tr.appendChild(nameTd);
+
+      var pctTd = document.createElement("td");
+      pctTd.className = "num";
+      pctTd.textContent = (parseFloat(list.percent)||0).toFixed(2) + "%";
+      tr.appendChild(pctTd);
+
+      var seatsTd = document.createElement("td");
+      seatsTd.className = "num";
+      seatsTd.textContent = seats;
+      tr.appendChild(seatsTd);
+
+      var shareTd = document.createElement("td");
+      shareTd.className = "num";
+      shareTd.textContent = ((seats / TOTAL_SEATS) * 100).toFixed(1) + "%";
+      tr.appendChild(shareTd);
+
+      var badgeTd = document.createElement("td");
+      var badge = document.createElement("span");
+      badge.className = "badge " + (passed ? "pass" : "fail");
+      badge.textContent = passed ? "Cleared " + threshold + "%" : "Below " + threshold + "%";
+      badgeTd.appendChild(badge);
+      tr.appendChild(badgeTd);
+
+      resultsBody.appendChild(tr);
+    });
+  }
+
+  function renderAllianceBlocks(seatsById){
+    allianceBlocksEl.innerHTML = "";
+    state.lists.filter(function(l){ return l.type === "alliance" && l.members.length; }).forEach(function(list){
+      var seats = seatsById[list.id] || 0;
+      var weights = list.members.map(function(m){ return parseFloat(m.weight) || 0; });
+      var memberSeats = allocateLargestRemainder(weights, seats);
+
+      var details = document.createElement("details");
+      details.className = "alliance-block";
+      var summary = document.createElement("summary");
+      summary.textContent = list.name + " — member parties (" + seats + " seats to divide)";
+      details.appendChild(summary);
+
+      var table = document.createElement("table");
+      var thead = document.createElement("thead");
+      thead.innerHTML = "<tr><th>Member party</th><th class=\"num\">Weight</th><th class=\"num\">Seats</th></tr>";
+      table.appendChild(thead);
+      var tbody = document.createElement("tbody");
+      list.members.forEach(function(m, i){
+        var tr = document.createElement("tr");
+        tr.innerHTML = "<td>" + m.name + " (" + m.abbr + ")</td>" +
+          "<td class=\"num\">" + m.weight + "</td>" +
+          "<td class=\"num\">" + memberSeats[i] + "</td>";
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      details.appendChild(table);
+      allianceBlocksEl.appendChild(details);
+    });
+  }
+
+  // ---------- Hemicycle ----------
+
+  function buildHemicycleSeatOrder(totalSeats){
+    var minR = 96, maxR = 340, rows = 14;
+    var radii = [];
+    for(var i=0;i<rows;i++){ radii.push(minR + (maxR-minR) * (i/(rows-1))); }
+    var rowSeatCounts = allocateLargestRemainder(radii, totalSeats);
+    var positions = [];
+    radii.forEach(function(r, rowIdx){
+      var count = rowSeatCounts[rowIdx];
+      if(count <= 0) return;
+      for(var s=0; s<count; s++){
+        var theta = count === 1 ? 90 : 180 - (s/(count-1)) * 180;
+        positions.push({ r: r, theta: theta, row: rowIdx });
+      }
+    });
+    positions.sort(function(a,b){ return b.theta - a.theta; });
+    return positions;
+  }
+
+  function renderHemicycle(svgEl, seatColors, ghost){
+    var total = seatColors.length;
+    var positions = buildHemicycleSeatOrder(total);
+    var cx = 380, cy = 380;
+    var frag = document.createDocumentFragment();
+    var seatR = ghost ? 3.6 : 5.4;
+    positions.forEach(function(pos, i){
+      var rad = pos.theta * Math.PI / 180;
+      var x = cx + pos.r * Math.cos(rad);
+      var y = cy - pos.r * Math.sin(rad);
+      var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", x.toFixed(1));
+      circle.setAttribute("cy", y.toFixed(1));
+      circle.setAttribute("r", seatR);
+      circle.setAttribute("class", "seat");
+      circle.setAttribute("fill", ghost ? "var(--line)" : (seatColors[i] || "#999"));
+      frag.appendChild(circle);
+    });
+    svgEl.innerHTML = "";
+    svgEl.appendChild(frag);
+  }
+
+  function renderHeroGhost(){
+    var container = document.getElementById("heroHemi");
+    var svgNs = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(svgNs, "svg");
+    svg.setAttribute("viewBox", "0 0 760 420");
+    svg.setAttribute("width", "100%");
+    svg.setAttribute("height", "auto");
+    container.innerHTML = "";
+    container.appendChild(svg);
+    renderHemicycle(svg, new Array(TOTAL_SEATS).fill(null), true);
+  }
+
+  function renderResults(){
+    var seatsById = computeSeats();
+    renderResultsTable(seatsById);
+    renderAllianceBlocks(seatsById);
+
+    var seatColors = [];
+    state.lists.forEach(function(list){
+      var n = seatsById[list.id] || 0;
+      for(var i=0;i<n;i++) seatColors.push(list.color);
+    });
+    while(seatColors.length < TOTAL_SEATS) seatColors.push("#e4ded0");
+
+    var svgEl = document.getElementById("hemiSvg");
+    renderHemicycle(svgEl, seatColors, false);
+  }
+
+  function renderAll(){
+    renderListsEditor();
+    renderResults();
+    saveState();
+  }
+
+  applyConfigToInputs();
+  renderHeroGhost();
+  renderAll();
+
+})();
+</script>
+
+</body>
+</html>
