@@ -175,10 +175,12 @@
   .total-line .amount.off{ color: var(--danger); }
 
   /* Hemicycle + results layout */
-  .results-grid{ display:grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items:start; }
+  .results-grid{ display:flex; flex-direction:column; gap: 32px; }
   .hemi-card{
     background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius);
     padding: 18px 18px 8px;
+    max-width: 640px;
+    margin: 0 auto;
   }
   .hemi-card svg{ width:100%; height:auto; display:block; }
   .majority-note{ text-align:center; font-size: .82rem; color: var(--ink-soft); margin-top: -4px; padding-bottom: 12px; }
@@ -208,7 +210,6 @@
 
   @media (max-width: 860px){
     .hero .grid{ grid-template-columns: 1fr; }
-    .results-grid{ grid-template-columns: 1fr; }
     .config-grid{ grid-template-columns: 1fr; }
     nav{ display:none; }
     .facts{ flex-wrap:wrap; }
@@ -410,10 +411,10 @@
       allianceThreshold: 7,
       lists: [
         { id: uid(), name: "Arise!", abbr: "Arise!", color: "#fa4d40", type: "party", percent: 30.2, members: [] },
-        { id: uid(), name: "Evropa Harmony", abbr: "EvH", color: "#011e57", type: "party", percent: 24.9, members: [] },
         { id: uid(), name: "Social Progressive Cooperation", abbr: "SPC", color: "#7f9c7a", type: "party", percent: 18.1, members: [] },
-        { id: uid(), name: "Evropa for Evropeans Party", abbr: "EfEP", color: "#000000", type: "party", percent: 14.9, members: [] },
+        { id: uid(), name: "Evropa Harmony", abbr: "EvH", color: "#011e57", type: "party", percent: 24.9, members: [] },
         { id: uid(), name: "Neo-Libertarian Movement", abbr: "ENLM", color: "#01925b", type: "party", percent: 9.8, members: [] },
+        { id: uid(), name: "Evropa for Evropeans Party", abbr: "EfEP", color: "#000000", type: "party", percent: 14.9, members: [] },
         { id: uid(), name: "Free Citizens Party", abbr: "FCP", color: "#feb700", type: "party", percent: 1.3, members: [] },
         { id: uid(), name: "Communist Coordination Committee of Socialist Parties", abbr: "CCCSP", color: "#f12315", type: "party", percent: 0.8, members: [] }
       ]
