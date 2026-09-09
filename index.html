@@ -7,23 +7,27 @@
 <meta name="description" content="Interactive seat-allocation simulator for the Evropean Assembly" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 
   :root{
     --paper: #efeae0;
-    --paper-raised: #f7f4ec;
+    --paper-raised: #ffffff;
     --ink: #1e1b16;
     --ink-soft: #55503f;
-    --navy: #1b2a4a;
-    --navy-soft: #2c3d63;
+    --navy: #07295e;
+    --navy-soft: #123a7a;
+    --blue: #3670ce;
+    --blue-soft: #5c8be0;
     --gold: #a9812e;
     --gold-soft: #cba75c;
-    --line: #c9c0ae;
-    --line-soft: #ddd6c5;
+    --line: #ded8c9;
+    --line-soft: #ece7db;
     --teal: #3e6259;
     --danger: #97402f;
-    --radius: 3px;
-    --serif: 'Poppins', 'Segoe UI', sans-serif;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 2px rgba(7,41,94,.06), 0 12px 28px -16px rgba(7,41,94,.28);
+    --serif: 'Montserrat', 'Segoe UI', sans-serif;
     --sans: 'IBM Plex Sans', 'Segoe UI', sans-serif;
   }
 
@@ -70,32 +74,43 @@
 
   /* Hero */
   .hero{
-    padding: 64px 0 48px;
-    border-bottom: 1px solid var(--line);
+    padding: 28px 0 40px;
+  }
+  .hero .card{
+    background: linear-gradient(135deg, var(--navy), var(--blue));
+    border-radius: var(--radius);
+    padding: 44px 44px 36px;
+    box-shadow: var(--shadow);
   }
   .hero .grid{
     display:grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items:center;
   }
+  .hero .eyebrow{
+    color: rgba(255,255,255,.7); font-size: .78rem; font-weight:700; letter-spacing:.08em;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
   .hero h1{
-    font-size: clamp(2rem, 3.4vw, 2.9rem);
-    line-height:1.12;
-    max-width: 15ch;
+    font-size: clamp(1.9rem, 3.2vw, 2.7rem);
+    line-height:1.15;
+    max-width: 16ch;
+    color: #ffffff;
   }
   .hero p.lede{
-    margin-top:16px; max-width: 46ch; color: var(--ink-soft); font-size: 1.02rem;
+    margin-top:14px; max-width: 46ch; color: rgba(255,255,255,.78); font-size: 1rem;
   }
   .facts{
-    margin-top: 30px; display:flex; gap: 0; border-top:1px solid var(--line-soft);
+    margin-top: 28px; display:flex; gap: 12px; flex-wrap:wrap;
   }
   .fact{
-    flex:1; padding: 14px 18px 0 0; border-right: 1px solid var(--line-soft);
+    flex:1; min-width: 140px; padding: 14px 16px;
+    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18);
+    border-radius: var(--radius-sm);
   }
-  .fact:last-child{ border-right:none; }
-  .fact .n{ font-family: var(--serif); font-weight:800; font-size: 1.7rem; color:var(--navy); font-variant-numeric: tabular-nums; }
-  .fact .l{ font-size: .8rem; color: var(--ink-soft); margin-top:2px; }
+  .fact .n{ font-family: var(--serif); font-weight:800; font-size: 1.6rem; color:#ffffff; font-variant-numeric: tabular-nums; }
+  .fact .l{ font-size: .76rem; color: rgba(255,255,255,.72); margin-top:2px; }
 
   .hemi-ghost{ opacity:.9; }
-  .hemi-ghost circle.seat{ fill: var(--line); }
+  .hemi-ghost circle.seat{ fill: rgba(255,255,255,.35); }
 
   /* Sections */
   section{ padding: 56px 0; border-bottom: 1px solid var(--line); }
@@ -107,12 +122,12 @@
   /* Buttons */
   .btn{
     border:1px solid var(--navy); background: transparent; color: var(--navy);
-    padding: 9px 16px; border-radius: var(--radius); font-size: .88rem; font-weight:500;
+    padding: 9px 18px; border-radius: var(--radius-sm); font-size: .88rem; font-weight:600;
     transition: background .15s, color .15s;
   }
   .btn:hover{ background: var(--navy); color: var(--paper); }
-  .btn.primary{ background: var(--navy); color: var(--paper); }
-  .btn.primary:hover{ background: var(--navy-soft); }
+  .btn.primary{ background: var(--blue); border-color: var(--blue); color: #ffffff; }
+  .btn.primary:hover{ background: var(--navy); border-color: var(--navy); }
   .btn.gold{ border-color: var(--gold); color: var(--gold); }
   .btn.gold:hover{ background: var(--gold); color: var(--paper); }
   .btn.ghost{ border-color: var(--line); color: var(--ink-soft); }
@@ -141,14 +156,14 @@
 
   input[type=text], input[type=number]{
     border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink);
-    padding: 6px 8px; border-radius: var(--radius); font-size: .88rem; width: 100%;
+    padding: 7px 10px; border-radius: var(--radius-sm); font-size: .88rem; width: 100%;
   }
   input[type=text]:focus, input[type=number]:focus, select:focus{
     outline: 2px solid var(--gold-soft); outline-offset:1px;
   }
   select{
     border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink);
-    padding: 6px 8px; border-radius: var(--radius); font-size: .85rem;
+    padding: 7px 10px; border-radius: var(--radius-sm); font-size: .85rem;
   }
   td.name-cell input{ min-width: 140px; }
   td.abbr-cell input{ width: 64px; }
@@ -180,6 +195,7 @@
   .hemi-card{
     background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius);
     padding: 18px 18px 8px;
+    box-shadow: var(--shadow);
   }
   .hemi-card svg{ width:100%; height:auto; display:block; }
   .majority-note{ text-align:center; font-size: .82rem; color: var(--ink-soft); margin-top: -4px; padding-bottom: 12px; }
@@ -234,17 +250,22 @@
 </header>
 
 <section class="hero">
-  <div class="wrap grid">
-    <div>
-      <h1>From one Evropa-wide result to all 720 seats of the Assembly.</h1>
-      <p class="lede">Enter the national result of each list, and the simulator applies the electoral threshold and seat formula set out in the Constitution to fill the Evropean Assembly.</p>
-      <div class="facts">
-        <div class="fact"><div class="n">720</div><div class="l">Assembly seats · Art. 79</div></div>
-        <div class="fact"><div class="n">5% / 7%</div><div class="l">Threshold, party / alliance · Art. 81</div></div>
-        <div class="fact"><div class="n">361</div><div class="l">Seats for a majority</div></div>
+  <div class="wrap">
+    <div class="card">
+      <div class="grid">
+        <div>
+          <div class="eyebrow">Election simulator</div>
+          <h1>From one Evropa-wide result to all 720 seats of the Assembly.</h1>
+          <p class="lede">Enter the national result of each list, and the simulator applies the electoral threshold and seat formula set out in the Constitution to fill the Evropean Assembly.</p>
+          <div class="facts">
+            <div class="fact"><div class="n">720</div><div class="l">Assembly seats · Art. 79</div></div>
+            <div class="fact"><div class="n">5% / 7%</div><div class="l">Threshold, party / alliance · Art. 81</div></div>
+            <div class="fact"><div class="n">361</div><div class="l">Seats for a majority</div></div>
+          </div>
+        </div>
+        <div class="hemi-ghost" id="heroHemi" aria-hidden="true"></div>
       </div>
     </div>
-    <div class="hemi-ghost" id="heroHemi" aria-hidden="true"></div>
   </div>
 </section>
 
