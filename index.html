@@ -126,9 +126,6 @@
   html.dark .standing-card .value{ color:#fff; }
   .standing-card .sub{ font-size:.78rem; color:var(--ink-soft); margin-top:2px; }
 
-  .election-nav{ display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom: 14px; flex-wrap:wrap; }
-  .election-nav .election-label{ font-family: var(--serif); font-weight:800; font-size:1.05rem; color: var(--navy); min-width: 0; text-align:center; }
-  html.dark .election-nav .election-label{ color:#fff; }
   .election-timeline{ display:flex; gap:4px; overflow-x:auto; padding: 4px 2px 10px; margin-bottom: 14px; }
   .election-timeline .yr-btn{
     flex:0 0 auto; border:1px solid var(--line); background: var(--paper-raised); color: var(--ink-soft);
@@ -522,7 +519,7 @@
     <div class="section-head">
       <div class="section-eyebrow">Results</div>
       <div class="head-row"><h2>Evropean Assembly</h2></div>
-      <p class="note">Seats are allocated only to lists that clear the electoral threshold, using the method chosen in Configuration. Swing is measured against each list's "Prev %" baseline — for an alliance, that's the combined baseline of its current member parties.</p>
+      <p class="note">Seats go only to lists that clear the electoral threshold. A list that falls short has its votes split across every qualifying list, weighted by ideological closeness on the left-right spectrum — the nearer a list, the bigger its share. Seats are then allocated by the method chosen in Configuration. Swing is measured against each list's "Prev %" baseline — for an alliance, that's the combined baseline of its current member parties.</p>
     </div>
 
     <div class="results-grid">
@@ -583,15 +580,6 @@
       <div class="section-eyebrow">Archive</div>
       <div class="head-row"><h2>Browse a past election</h2></div>
       <p class="note">Pick an election to see how its Assembly was seated. The First Republic (through 2058) set no electoral threshold; the Second Republic, from 2061 onward, introduced one.</p>
-    </div>
-    <div class="field" style="max-width:360px; margin-bottom:18px;">
-      <label for="electionSelect">Jump to election</label>
-      <select id="electionSelect"></select>
-    </div>
-    <div class="election-nav">
-      <button class="btn ghost small" id="prevElectionBtn">← Prev</button>
-      <div class="election-label" id="electionLabel"></div>
-      <button class="btn ghost small" id="nextElectionBtn">Next →</button>
     </div>
     <div class="election-timeline" id="electionTimeline"></div>
     <div class="results-grid">
@@ -812,7 +800,7 @@
     { type: "party", abbr: "Astra", name: "Per Aspera ad Astra", founded: "22 July 2063 (merger of Delta and SLP)", ideology: "Democratic socialism, Co-operative centralism, Left-wing populism, Materialism, Progressivism", position: "Left-wing" , notes: "Formed from the merger of Delta and the Socialist Popular Rally successor to NASC."},
     { type: "party", abbr: "SPC", name: "Social Progressive Cooperation", founded: "21 July 2056", ideology: "Social democracy, Ultra progressivism, Green politics, Technocracy", position: "Centre-left" },
     { type: "party", abbr: "Arise!", name: "Arise!", founded: "25 December 2068 (merger of Astra and Evropean Rebirth)", ideology: "Democratic socialism, Populism, Evronationalism, Unitarism, Labourism, Progressivism", position: "Left-wing", notes: "Formed from the merger of Astra and Evropean Rebirth; its branches include the Socialist Popular Rally and PA-KD." },
-    { type: "party", abbr: "PC", name: "Carlist Party", founded: "—", ideology: "—", position: "Centre-left", notes: "Formerly a branch/faction within Evropa Harmony (EvH); became an independent party for the current Assembly." },
+    { type: "party", abbr: "PC", name: "Carlist Party", founded: "Roughly three decades of continuous activity, by its own leadership's account", ideology: "Christian-inspired socialism, Cooperative economics, Communitarianism, Regional autonomism, Cultural traditionalism, Ceremonial monarchism, Industrial and export development", position: "Centre-left", notes: "Now fully independent of Evropa Harmony (EvH), after previously running as its Iberian sister party. Long dominant in Iberian regional politics — its leader, Villa Jr, has served as Premier/Steward of Iberia, overseeing an 'Iberian Decade' legislative programme (the POWER, SPARK, SIGNATURE, and EXPORT+ Acts) covering energy infrastructure, research commercialisation, origin/quality branding, and export capacity. Maintains autonomous regional branches, including the PNCC (Catalonia), PCR (Portugal), and RSMC (Sardinia), and has taken part in broader alliances such as PEOPLES and the League of Mediterranea." },
     { type: "party", abbr: "FCP", name: "Free Citizens' Party", founded: "2068", ideology: "Anti-corruption, Anti-nepotism, Pirate politics, Environmentalism, Moderate economics, Direct democracy, Provincialism", position: "Centre-right", notes: "New party contesting for the first time in the current Assembly." },
     { type: "party", abbr: "CCCSP", name: "Communist Coordination Committee of Socialist Parties", founded: "2068", ideology: "Revolutionary communism, Revolutionary socialism", position: "Far-left", notes: "New party contesting for the first time in the current Assembly." }
   ];
@@ -895,7 +883,7 @@
       results: [ ["NASC",114,15.8], ["RLP",106,14.7], ["ER",128,17.8], ["EvH",78,10.8], ["DU",97,13.5], ["ENLM",109,15.1], ["GFP",7,1.0], ["RES",10,1.4], ["CWPE",30,4.2], ["EfEP",41,5.7] ] },
     { year: 2052, seats: 720, majority: 361, turnout: 85, republic: 1,
       results: [ ["CAFE",154,21.4], ["ENLM",132,18.3], ["EfEP",128,17.8], ["NASC",84,11.7], ["ER",75,10.4], ["RLP",65,9.0], ["CWPE",40,5.5], ["ReDe",21,2.9], ["RES",12,1.7], ["GFP",9,1.3] ] },
-    { year: 2054, seats: 720, majority: 361, turnout: 49, republic: 1, snap: true,
+    { year: 2054, seats: 720, majority: 361, turnout: 49, republic: 1,
       results: [ ["ENLM",168,23.4], ["CAFE",141,19.6], ["ROSE",122,16.9], ["CWPE",102,14.2], ["ER",76,10.6], ["EfEP",65,9.0], ["RES",33,4.6], ["ReDe",13,1.8] ] },
     { year: 2057, seats: 720, majority: 361, turnout: 41, republic: 1,
       results: [ ["ROSE",183,25.4], ["EvH",141,19.6], ["ENLM",104,14.4], ["ER",66,9.2], ["RES",57,8.0], ["DU",49,6.8], ["EfEP",41,5.7], ["AMIN",37,5.1], ["ReDe",24,3.3] ] },
@@ -903,7 +891,7 @@
       results: [ ["ROSE",145,20.1], ["ER",131,18.2], ["EvH",121,16.8], ["ENLM",95,13.2], ["RES",47,6.5], ["Delta",44,6.1], ["AMIN",43,6.0], ["EfEP",38,5.3], ["DU",29,4.0] ] },
     { year: 2061, seats: 720, majority: 361, turnout: 71, republic: 2,
       results: [ ["EvH",152,20.1], ["SPC",145,19.2], ["CORE",133,17.5], ["ENLM",86,11.3], ["AMIN",77,10.2], ["NASC",73,9.7], ["Delta",54,7.1] ] },
-    { year: 2064, seats: 720, majority: 361, turnout: 78, republic: 2, renamedAssembly: true,
+    { year: 2064, seats: 720, majority: 361, turnout: 78, republic: 2,
       results: [ ["EvH",210,29.2], ["CORE",156,21.6], ["SPC",128,17.8], ["ENLM",94,13.0], ["Astra",73,10.2], ["AMIN",59,8.2] ] },
     { year: 2067, seats: 720, majority: 361, turnout: 76, republic: 2,
       results: [ ["CORE",214,29.8], ["EvH",176,24.4], ["ENLM",122,16.9], ["SPC",108,15.0], ["Astra",100,13.9] ] }
@@ -1402,14 +1390,39 @@
 
   var resultsBody = document.getElementById("resultsBody");
 
+  function thresholdOf(list){ return list.type === "alliance" ? state.allianceThreshold : state.partyThreshold; }
+
+  var redistributionMap = {}; // listId -> id of the qualifying list its votes were redirected to (or null)
+
   function computeSeats(){
-    var thresholdOf = function(list){ return list.type === "alliance" ? state.allianceThreshold : state.partyThreshold; };
     var qualifying = state.lists.filter(function(l){ return percentOf(l) >= thresholdOf(l); });
-    var weights = qualifying.map(function(l){ return percentOf(l); });
+    var nonQualifying = state.lists.filter(function(l){ return percentOf(l) < thresholdOf(l); });
+
+    var effective = {};
+    qualifying.forEach(function(l){ effective[l.id] = percentOf(l); });
+    redistributionMap = {};
+
+    nonQualifying.forEach(function(l){
+      if(!qualifying.length){ redistributionMap[l.id] = []; return; }
+      var lSpec = spectrumOf(l.abbr);
+      var shareWeights = qualifying.map(function(q){ return Math.exp(-2.5 * Math.abs(spectrumOf(q.abbr) - lSpec)); });
+      var totalWeight = shareWeights.reduce(function(a,b){ return a + b; }, 0);
+      var amount = percentOf(l);
+      var shares = [];
+      qualifying.forEach(function(q, i){
+        var share = amount * (shareWeights[i] / totalWeight);
+        effective[q.id] += share;
+        shares.push({ id: q.id, abbr: q.abbr, share: share });
+      });
+      shares.sort(function(a,b){ return b.share - a.share; });
+      redistributionMap[l.id] = shares;
+    });
+
+    var weights = qualifying.map(function(l){ return effective[l.id]; });
     var seatCounts = allocate(state.method, weights, TOTAL_SEATS);
     var seatsById = {};
     qualifying.forEach(function(l, i){ seatsById[l.id] = seatCounts[i]; });
-    state.lists.forEach(function(l){ if(!(l.id in seatsById)) seatsById[l.id] = 0; });
+    nonQualifying.forEach(function(l){ seatsById[l.id] = 0; });
     return seatsById;
   }
 
@@ -1443,7 +1456,7 @@
       if(!matchesSearch(list)) return;
 
       var seats = seatsById[list.id] || 0;
-      var threshold = list.type === "alliance" ? state.allianceThreshold : state.partyThreshold;
+      var threshold = thresholdOf(list);
       var passed = percentOf(list) >= threshold;
 
       var tr = document.createElement("tr");
@@ -1496,7 +1509,17 @@
       var badgeTd = document.createElement("td");
       var badge = document.createElement("span");
       badge.className = "badge " + (passed ? "pass" : "fail");
-      badge.textContent = passed ? "Cleared " + threshold + "%" : "Below " + threshold + "%";
+      if(passed){
+        badge.textContent = "Cleared " + threshold + "%";
+      } else {
+        var shares = redistributionMap[list.id] || [];
+        if(shares.length){
+          badge.textContent = "Below " + threshold + "% → mostly " + shares[0].abbr;
+          badge.title = shares.map(function(s){ return s.abbr + ": " + s.share.toFixed(2) + "%"; }).join(", ");
+        } else {
+          badge.textContent = "Below " + threshold + "%";
+        }
+      }
       badgeTd.appendChild(badge);
       tr.appendChild(badgeTd);
 
@@ -1902,13 +1925,6 @@
 
   // ---------- Past election browser ----------
 
-  function buildElectionLabel(e){
-    var bits = [String(e.year)];
-    if(e.snap) bits.push("(snap)");
-    if(e.renamedAssembly) bits.push("· renamed Assembly");
-    return bits.join(" ");
-  }
-
   function updateElectionUrl(year){
     try{
       var url = new URL(window.location.href);
@@ -1920,10 +1936,6 @@
   function goToElectionIndex(index, skipUrlUpdate){
     if(index < 0 || index >= pastElections.length) return;
     renderPastElection(index);
-    document.getElementById("electionSelect").value = String(index);
-    document.getElementById("electionLabel").textContent = buildElectionLabel(pastElections[index]);
-    document.getElementById("prevElectionBtn").disabled = index === 0;
-    document.getElementById("nextElectionBtn").disabled = index === pastElections.length - 1;
     document.querySelectorAll(".election-timeline .yr-btn").forEach(function(btn){
       btn.classList.toggle("active", parseInt(btn.dataset.index, 10) === index);
     });
@@ -1931,28 +1943,14 @@
   }
 
   function populateElectionSelect(){
-    var select = document.getElementById("electionSelect");
     var timeline = document.getElementById("electionTimeline");
-    select.innerHTML = "";
     timeline.innerHTML = "";
     pastElections.forEach(function(e, i){
-      var opt = document.createElement("option");
-      opt.value = String(i);
-      opt.textContent = e.year + (e.snap ? " (snap election)" : "") + (e.renamedAssembly ? " — renamed the Evropean Assembly" : "");
-      select.appendChild(opt);
-      if(e.year === 2058){
-        var divider = document.createElement("option");
-        divider.disabled = true;
-        divider.textContent = "── Second Republic begins: electoral threshold introduced ──";
-        select.appendChild(divider);
-      }
-
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "yr-btn";
       btn.textContent = e.year;
       btn.dataset.index = String(i);
-      btn.title = buildElectionLabel(e);
       btn.addEventListener("click", function(){ goToElectionIndex(i); });
       timeline.appendChild(btn);
       if(e.year === 2058){
@@ -1962,10 +1960,6 @@
         timeline.appendChild(div);
       }
     });
-
-    select.addEventListener("change", function(){ goToElectionIndex(parseInt(select.value, 10)); });
-    document.getElementById("prevElectionBtn").addEventListener("click", function(){ goToElectionIndex(currentPastIndex - 1); });
-    document.getElementById("nextElectionBtn").addEventListener("click", function(){ goToElectionIndex(currentPastIndex + 1); });
 
     var startIndex = pastElections.length - 1;
     try{
@@ -1989,7 +1983,7 @@
     var majority = e.majority;
     var seatsTotal = e.seats;
     var noteBits = [
-      "Republic " + (e.republic === 1 ? "1 (no electoral threshold)" : "2"),
+      e.republic === 1 ? "1st Republic (no electoral threshold)" : "2nd Republic",
       e.turnout ? e.turnout + "% turnout" : null,
       "Majority line at " + majority + " of " + seatsTotal
     ].filter(Boolean);
