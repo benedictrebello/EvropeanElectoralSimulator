@@ -685,6 +685,11 @@
         <input type="number" id="allianceThreshold" value="7" min="0" max="100" step="0.5" />
         <span class="help">An alliance of two or more parties needs at least this share to win seats.</span>
       </div>
+      <div class="field">
+        <label for="redistributionSteepness">Redistribution steepness (<span id="redistributionSteepnessValue">2.5</span>)</label>
+        <input type="range" id="redistributionSteepness" value="2.5" min="0.5" max="5" step="0.1" />
+        <span class="help">How sharply a sub-threshold list's votes concentrate on its nearest ideological neighbor versus spreading more evenly.</span>
+      </div>
     </div>
   </div>
 </section>
@@ -728,6 +733,7 @@
       method: "sainte-lague",
       partyThreshold: 5,
       allianceThreshold: 7,
+      redistributionSteepness: 2.5,
       coalition: [],
       lists: [
         { id: uid(), name: "Communist Coordination Committee of Socialist Parties", abbr: "CCCSP", color: "#f12315", type: "party", percent: 0.8, previousPercent: 0, members: [] },
@@ -742,19 +748,40 @@
     };
   }
 
-  // Rough left(1) → right(10) placement
+  // Rough left(1) → right(10) placement, inferred from names, colours and the party-lineage diagram.
+  // This is a best-effort read of thin ideological signal — tell me if any placement is off.
+  // Two-axis (economic, social) positions for the current 8 parties — used only for
+  // second/third-preference vote redistribution, not for the left-right hemicycle ordering.
+  var partyEconSocial = {
+    "Arise!": { econ: 3,   social: 3   },
+    "EvH":    { econ: 5.5, social: 7   },
+    "SPC":    { econ: 4,   social: 1   },
+    "ENLM":   { econ: 9.2, social: 4   },
+    "EfEP":   { econ: 5,   social: 8   },
+    "PC":     { econ: 2.8, social: 4.2 },
+    "FCP":    { econ: 6,   social: 2   },
+    "CCCSP":  { econ: 1,   social: 1   }
+  };
+  function econOf(abbr){ return partyEconSocial[abbr] ? partyEconSocial[abbr].econ : spectrumOf(abbr); }
+  function socialOf(abbr){ return partyEconSocial[abbr] ? partyEconSocial[abbr].social : spectrumOf(abbr); }
+  function ideoDistance(abbrA, abbrB){
+    var dEcon = econOf(abbrA) - econOf(abbrB);
+    var dSocial = socialOf(abbrA) - socialOf(abbrB);
+    return Math.sqrt(dEcon*dEcon + dSocial*dSocial);
+  }
+
   var partySpectrum = {
-    "CWPE": 1, "CSAE": 1.5, "SAE": 1.5, "DSA": 1.5,
+    "CCCSP": 1, "CWPE": 1, "CSAE": 1.5, "SAE": 1.5, "DSA": 1.5,
     "RSA": 1.5, "NASC": 1.5,
     "SDP": 3.5, "ROSE": 2.5, "GRASP": 3, "SOLAR": 2, "Greens": 2.5, "GA": 2.5, "GD": 2.5, "Delta": 2, "Astra": 2.5,
-    "PEC": 4, "ER": 2.5, "RLP": 2.5, "EUP": 3.5,
+    "Arise!": 3, "PC": 3.5, "SPC": 3.5, "PEC": 4, "ER": 2.5, "RLP": 2.5, "EUP": 3.5,
     "GFP": 5, "RES": 5, "M30": 5, "BSP": 5, "Mason": 5,
     "ECU": 6, "CLPB": 6.5, "Renewal": 6, "PIP": 5.5, "FEP": 5.5,
-    "ELC": 6.5, "LFDU": 6.5, "CORE": 6, "FCP": 5, "DU": 6.5, "FTU": 6.5,
+    "ELC": 6.5, "LFDU": 6.5, "CORE": 6, "FCP": 6, "DU": 6.5, "FTU": 6.5,
     "PFD": 7, "PAX": 6.5, "PAUR": 7, "GDP": 7, "PLJ": 7, "PiS": 7,
-    "AMIN": 6.6, "VCU": 7.5, "ReDe": 7.5, "CAFE": 7.5,
-    "EMM": 8, "POE": 8,
-    "CCCSP": 1, "Arise!": 3, "PC": 3.5, "SPC": 4.5, "EvH": 6.5, "ENLM": 7.5, "EfEP": 8.5
+    "EvH": 6.4, "AMIN": 6.6, "VCU": 7.5, "ReDe": 7.5, "CAFE": 7.5,
+    "ENLM": 7.5, "EMM": 8, "POE": 8,
+    "EfEP": 9.5
   };
   function spectrumOf(abbr){ return (abbr in partySpectrum) ? partySpectrum[abbr] : 5; }
 
@@ -905,6 +932,7 @@
       var parsed = JSON.parse(raw);
       if(!parsed || !Array.isArray(parsed.lists) || !parsed.lists.length) return defaultState();
       if(!Array.isArray(parsed.coalition)) parsed.coalition = [];
+      if(typeof parsed.redistributionSteepness !== "number") parsed.redistributionSteepness = 2.5;
       return parsed;
     }catch(e){ return defaultState(); }
   }
@@ -951,6 +979,7 @@
       var parsed = JSON.parse(base64ToUtf8(raw));
       if(!parsed || !Array.isArray(parsed.lists)) return null;
       parsed.coalition = [];
+      if(typeof parsed.redistributionSteepness !== "number") parsed.redistributionSteepness = 2.5;
       parsed.lists = parsed.lists.map(function(l){
         l.id = uid();
         l.previousPercent = (typeof l.previousPercent === "number") ? l.previousPercent : (l.percent||0);
@@ -1337,6 +1366,7 @@
 
   var partyThresholdInput = document.getElementById("partyThreshold");
   var allianceThresholdInput = document.getElementById("allianceThreshold");
+  var redistributionSteepnessInput = document.getElementById("redistributionSteepness");
 
   function applyConfigToInputs(){
     document.querySelectorAll("#methodSegmented .seg-btn").forEach(function(btn){
@@ -1344,6 +1374,8 @@
     });
     partyThresholdInput.value = state.partyThreshold;
     allianceThresholdInput.value = state.allianceThreshold;
+    redistributionSteepnessInput.value = state.redistributionSteepness;
+    document.getElementById("redistributionSteepnessValue").textContent = state.redistributionSteepness;
   }
 
   document.querySelectorAll("#methodSegmented .seg-btn").forEach(function(btn){
@@ -1356,6 +1388,12 @@
   });
   partyThresholdInput.addEventListener("input", function(){ state.partyThreshold = parseFloat(partyThresholdInput.value) || 0; renderResults(); saveState(); });
   allianceThresholdInput.addEventListener("input", function(){ state.allianceThreshold = parseFloat(allianceThresholdInput.value) || 0; renderResults(); saveState(); });
+  redistributionSteepnessInput.addEventListener("input", function(){
+    state.redistributionSteepness = parseFloat(redistributionSteepnessInput.value) || 2.5;
+    document.getElementById("redistributionSteepnessValue").textContent = state.redistributionSteepness;
+    renderResults();
+    saveState();
+  });
 
   // ---------- Search ----------
 
@@ -1394,34 +1432,39 @@
   var redistributionMap = {}; // listId -> id of the qualifying list its votes were redirected to (or null)
 
   function computeSeats(){
-    var qualifying = state.lists.filter(function(l){ return percentOf(l) >= thresholdOf(l); });
-    var nonQualifying = state.lists.filter(function(l){ return percentOf(l) < thresholdOf(l); });
-
-    var effective = {};
-    qualifying.forEach(function(l){ effective[l.id] = percentOf(l); });
+    var survivors = state.lists.map(function(l){ return { list: l, percent: percentOf(l) }; });
     redistributionMap = {};
+    var eliminatedIds = [];
 
-    nonQualifying.forEach(function(l){
-      if(!qualifying.length){ redistributionMap[l.id] = []; return; }
-      var lSpec = spectrumOf(l.abbr);
-      var shareWeights = qualifying.map(function(q){ return Math.exp(-2.5 * Math.abs(spectrumOf(q.abbr) - lSpec)); });
-      var totalWeight = shareWeights.reduce(function(a,b){ return a + b; }, 0);
-      var amount = percentOf(l);
+    function isQualifying(entry){ return entry.percent >= thresholdOf(entry.list); }
+
+    while(survivors.length > 1){
+      var subThreshold = survivors.filter(function(e){ return !isQualifying(e); });
+      if(!subThreshold.length) break;
+
+      var lowest = subThreshold[0];
+      subThreshold.forEach(function(e){ if(e.percent < lowest.percent) lowest = e; });
+      survivors = survivors.filter(function(e){ return e !== lowest; });
+
+      var lAbbr = lowest.list.abbr;
+      var weights = survivors.map(function(e){ return Math.exp(-state.redistributionSteepness * ideoDistance(lAbbr, e.list.abbr)); });
+      var totalWeight = weights.reduce(function(a,b){ return a + b; }, 0);
       var shares = [];
-      qualifying.forEach(function(q, i){
-        var share = amount * (shareWeights[i] / totalWeight);
-        effective[q.id] += share;
-        shares.push({ id: q.id, abbr: q.abbr, share: share });
+      survivors.forEach(function(e, i){
+        var share = lowest.percent * (weights[i] / totalWeight);
+        e.percent += share;
+        shares.push({ id: e.list.id, abbr: e.list.abbr, share: share });
       });
       shares.sort(function(a,b){ return b.share - a.share; });
-      redistributionMap[l.id] = shares;
-    });
+      redistributionMap[lowest.list.id] = shares;
+      eliminatedIds.push(lowest.list.id);
+    }
 
-    var weights = qualifying.map(function(l){ return effective[l.id]; });
+    var weights = survivors.map(function(e){ return e.percent; });
     var seatCounts = allocate(state.method, weights, TOTAL_SEATS);
     var seatsById = {};
-    qualifying.forEach(function(l, i){ seatsById[l.id] = seatCounts[i]; });
-    nonQualifying.forEach(function(l){ seatsById[l.id] = 0; });
+    survivors.forEach(function(e, i){ seatsById[e.list.id] = seatCounts[i]; });
+    eliminatedIds.forEach(function(id){ seatsById[id] = 0; });
     return seatsById;
   }
 
@@ -2226,8 +2269,8 @@
     { title: "Radical-left lineage", steps: [["DSA","SDP"], "RSA", "RLP"] },
     { title: "Liberal-conservative / technocratic lineage", steps: [["CLPB","PFD"], "ELC", "FTU", "DU", "CAFE"] },
     { title: "Evropean Rebirth lineage", steps: ["ER", "CORE", "Arise!"] },
-    { title: "Restoration lineage", steps: ["NASC", "Astra"] },
-    { title: "Delta lineage", steps: ["Delta", "Astra"] },
+    { title: "Restoration lineage", steps: ["NASC", "Astra", "Arise!"] },
+    { title: "Delta lineage", steps: ["Delta", "Astra", "Arise!"] },
     { title: "Evropa Harmony lineage", steps: ["EvH", ["EvH","AMIN"], "EvH"] },
     { title: "Evropa Harmony branch", steps: ["EvH", "PC"] },
     { title: "New entrant (2068)", steps: ["FCP"] },
@@ -2324,6 +2367,7 @@
     return JSON.stringify({
       lists: state.lists, method: state.method,
       partyThreshold: state.partyThreshold, allianceThreshold: state.allianceThreshold,
+      redistributionSteepness: state.redistributionSteepness,
       coalition: state.coalition
     });
   }
@@ -2345,6 +2389,7 @@
     state.method = snap.method;
     state.partyThreshold = snap.partyThreshold;
     state.allianceThreshold = snap.allianceThreshold;
+    state.redistributionSteepness = (typeof snap.redistributionSteepness === "number") ? snap.redistributionSteepness : 2.5;
     state.coalition = snap.coalition || [];
   }
   function doUndo(){
