@@ -1405,7 +1405,7 @@
     nonQualifying.forEach(function(l){
       if(!qualifying.length){ redistributionMap[l.id] = []; return; }
       var lSpec = spectrumOf(l.abbr);
-      var shareWeights = qualifying.map(function(q){ return Math.exp(-2.5 * Math.abs(spectrumOf(q.abbr) - lSpec)); });
+      var shareWeights = qualifying.map(function(q){ return Math.exp(-3.5 * Math.abs(spectrumOf(q.abbr) - lSpec)); });
       var totalWeight = shareWeights.reduce(function(a,b){ return a + b; }, 0);
       var amount = percentOf(l);
       var shares = [];
