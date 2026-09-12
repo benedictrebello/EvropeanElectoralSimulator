@@ -1481,6 +1481,7 @@
     if(!fromCat || !toCat) return false;
     return (fromCat === "separatist" && toCat === "centralist") || (fromCat === "centralist" && toCat === "separatist");
   }
+  var INCOMPATIBLE_WASTE_RATIO = 0.75; // most of an incompatible share is wasted; the rest boosts the next-best compatible party
 
   // Documented real-world relationships among the current parties, layered on top of the
   // abstract ideological model: EvH and PC's long-standing sister-party bond, and SPC/ENLM's
@@ -1517,15 +1518,27 @@
       var totalWeight = weights.reduce(function(a,b){ return a + b; }, 0);
       var wastedAmount = lowest.percent * (state.voteWastage / 100);
       var redistributable = lowest.percent - wastedAmount;
+
+      var compatible = survivors.map(function(e){ return !isCentralizationIncompatible(lAbbr, e.list.abbr); });
+      var compatibleWeightSum = weights.reduce(function(sum, w, i){ return sum + (compatible[i] ? w : 0); }, 0);
+
+      var baseShares = weights.map(function(w){ return redistributable * (w / totalWeight); });
+      var boostPool = 0;
+      baseShares.forEach(function(share, i){
+        if(!compatible[i]){
+          var wastedPortion = share * INCOMPATIBLE_WASTE_RATIO;
+          wastedAmount += wastedPortion;
+          boostPool += share - wastedPortion;
+        }
+      });
+
       var shares = [];
       survivors.forEach(function(e, i){
-        var share = redistributable * (weights[i] / totalWeight);
-        if(isCentralizationIncompatible(lAbbr, e.list.abbr)){
-          wastedAmount += share;
-        } else {
-          e.percent += share;
-          shares.push({ id: e.list.id, abbr: e.list.abbr, share: share });
-        }
+        if(!compatible[i]) return;
+        var extra = compatibleWeightSum > 0 ? boostPool * (weights[i] / compatibleWeightSum) : 0;
+        var share = baseShares[i] + extra;
+        e.percent += share;
+        shares.push({ id: e.list.id, abbr: e.list.abbr, share: share });
       });
       shares.sort(function(a,b){ return b.share - a.share; });
       redistributionMap[lowest.list.id] = { shares: shares, wasted: wastedAmount };
