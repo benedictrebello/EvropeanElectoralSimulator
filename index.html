@@ -764,10 +764,31 @@
   };
   function econOf(abbr){ return partyEconSocial[abbr] ? partyEconSocial[abbr].econ : spectrumOf(abbr); }
   function socialOf(abbr){ return partyEconSocial[abbr] ? partyEconSocial[abbr].social : spectrumOf(abbr); }
-  function ideoDistance(abbrA, abbrB){
-    var dEcon = econOf(abbrA) - econOf(abbrB);
-    var dSocial = socialOf(abbrA) - socialOf(abbrB);
-    return Math.sqrt(dEcon*dEcon + dSocial*dSocial);
+  // How far a party's economics sit from the political center (0 = centrist, 1 = maximally extreme).
+  function economicExtremity(abbr){
+    var ECON_CENTER = 5.1, ECON_SPREAD = 4.1; // derived from the actual econ range (1 to 9.2)
+    return Math.min(1, Math.abs(econOf(abbr) - ECON_CENTER) / ECON_SPREAD);
+  }
+  function socialExtremity(abbr){
+    var SOCIAL_CENTER = 4.5, SOCIAL_SPREAD = 3.5; // derived from the actual social range (1 to 8)
+    return Math.min(1, Math.abs(socialOf(abbr) - SOCIAL_CENTER) / SOCIAL_SPREAD);
+  }
+  // Distance as seen FROM fromAbbr's perspective when redistributing its votes: whichever
+  // single axis fromAbbr sits MORE extreme on (ties favor economics) gets weighted more
+  // heavily; the other axis stays at normal weight. This avoids a party that's extreme on
+  // both axes having the two boosts cancel each other out.
+  function ideoDistance(fromAbbr, toAbbr){
+    var dEcon = econOf(fromAbbr) - econOf(toAbbr);
+    var dSocial = socialOf(fromAbbr) - socialOf(toAbbr);
+    var econExtremity = economicExtremity(fromAbbr);
+    var socialExtremityVal = socialExtremity(fromAbbr);
+    var econWeight = 1, socialWeight = 1;
+    if(econExtremity >= socialExtremityVal){
+      econWeight = 1 + econExtremity * 3;
+    } else {
+      socialWeight = 1 + socialExtremityVal * 3;
+    }
+    return Math.sqrt(econWeight * dEcon*dEcon + socialWeight * dSocial*dSocial);
   }
 
   var partySpectrum = {
