@@ -742,20 +742,19 @@
     };
   }
 
-  // Rough left(1) → right(10) placement, inferred from names, colours and the party-lineage diagram.
-  // This is a best-effort read of thin ideological signal — tell me if any placement is off.
+  // Rough left(1) → right(10) placement
   var partySpectrum = {
-    "CCCSP": 1, "CWPE": 1, "CSAE": 1.5, "SAE": 1.5, "DSA": 1.5,
+    "CWPE": 1, "CSAE": 1.5, "SAE": 1.5, "DSA": 1.5,
     "RSA": 1.5, "NASC": 1.5,
     "SDP": 3.5, "ROSE": 2.5, "GRASP": 3, "SOLAR": 2, "Greens": 2.5, "GA": 2.5, "GD": 2.5, "Delta": 2, "Astra": 2.5,
-    "Arise!": 3, "PC": 4, "SPC": 4.5, "PEC": 4, "ER": 2.5, "RLP": 2.5, "EUP": 3.5,
+    "PEC": 4, "ER": 2.5, "RLP": 2.5, "EUP": 3.5,
     "GFP": 5, "RES": 5, "M30": 5, "BSP": 5, "Mason": 5,
     "ECU": 6, "CLPB": 6.5, "Renewal": 6, "PIP": 5.5, "FEP": 5.5,
     "ELC": 6.5, "LFDU": 6.5, "CORE": 6, "FCP": 5, "DU": 6.5, "FTU": 6.5,
     "PFD": 7, "PAX": 6.5, "PAUR": 7, "GDP": 7, "PLJ": 7, "PiS": 7,
-    "EvH": 6.4, "AMIN": 6.6, "VCU": 7.5, "ReDe": 7.5, "CAFE": 7.5,
-    "ENLM": 7.5, "EMM": 8, "POE": 8,
-    "EfEP": 9.5
+    "AMIN": 6.6, "VCU": 7.5, "ReDe": 7.5, "CAFE": 7.5,
+    "EMM": 8, "POE": 8,
+    "CCCSP": 1, "Arise!": 3, "PC": 3.5, "SPC": 4.5, "EvH": 6.5, "ENLM": 7.5, "EfEP": 8.5
   };
   function spectrumOf(abbr){ return (abbr in partySpectrum) ? partySpectrum[abbr] : 5; }
 
