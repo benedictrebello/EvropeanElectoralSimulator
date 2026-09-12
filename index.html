@@ -519,7 +519,7 @@
     <div class="section-head">
       <div class="section-eyebrow">Results</div>
       <div class="head-row"><h2>Evropean Assembly</h2></div>
-      <p class="note">Seats go only to lists that clear the electoral threshold. A list that falls short has its votes split across every qualifying list, weighted by ideological closeness on the left-right spectrum — the nearer a list, the bigger its share. Seats are then allocated by the method chosen in Configuration. Swing is measured against each list's "Prev %" baseline — for an alliance, that's the combined baseline of its current member parties.</p>
+      <p class="note">Seats go only to lists that clear the electoral threshold. Starting with the weakest, a sub-threshold list is eliminated at a time: a share of its votes goes unclaimed (set in Configuration), and the rest splits across every list still standing, weighted by ideological closeness — with a boost for a few documented real-world alliances — repeating until everyone left clears the bar. Seats are then allocated by the method chosen in Configuration. Swing is measured against each list's "Prev %" baseline — for an alliance, that's the combined baseline of its current member parties.</p>
     </div>
 
     <div class="results-grid">
@@ -690,6 +690,11 @@
         <input type="range" id="redistributionSteepness" value="2.5" min="0.5" max="5" step="0.1" />
         <span class="help">How sharply a sub-threshold list's votes concentrate on its nearest ideological neighbor versus spreading more evenly.</span>
       </div>
+      <div class="field">
+        <label for="voteWastage">Vote wastage / abstention (<span id="voteWastageValue">15</span>%)</label>
+        <input type="range" id="voteWastage" value="15" min="0" max="50" step="1" />
+        <span class="help">Share of a failed list's votes that simply go unclaimed rather than transferring to another party — protest voters who'd rather abstain than pick a second choice.</span>
+      </div>
     </div>
   </div>
 </section>
@@ -734,6 +739,7 @@
       partyThreshold: 5,
       allianceThreshold: 7,
       redistributionSteepness: 2.5,
+      voteWastage: 15,
       coalition: [],
       lists: [
         { id: uid(), name: "Communist Coordination Committee of Socialist Parties", abbr: "CCCSP", color: "#f12315", type: "party", percent: 0.8, previousPercent: 0, members: [] },
@@ -954,6 +960,8 @@
       if(!parsed || !Array.isArray(parsed.lists) || !parsed.lists.length) return defaultState();
       if(!Array.isArray(parsed.coalition)) parsed.coalition = [];
       if(typeof parsed.redistributionSteepness !== "number") parsed.redistributionSteepness = 2.5;
+      if(typeof parsed.voteWastage !== "number") parsed.voteWastage = 15;
+      if(typeof parsed.voteWastage !== "number") parsed.voteWastage = 15;
       return parsed;
     }catch(e){ return defaultState(); }
   }
@@ -1388,6 +1396,7 @@
   var partyThresholdInput = document.getElementById("partyThreshold");
   var allianceThresholdInput = document.getElementById("allianceThreshold");
   var redistributionSteepnessInput = document.getElementById("redistributionSteepness");
+  var voteWastageInput = document.getElementById("voteWastage");
 
   function applyConfigToInputs(){
     document.querySelectorAll("#methodSegmented .seg-btn").forEach(function(btn){
@@ -1397,6 +1406,8 @@
     allianceThresholdInput.value = state.allianceThreshold;
     redistributionSteepnessInput.value = state.redistributionSteepness;
     document.getElementById("redistributionSteepnessValue").textContent = state.redistributionSteepness;
+    voteWastageInput.value = state.voteWastage;
+    document.getElementById("voteWastageValue").textContent = state.voteWastage;
   }
 
   document.querySelectorAll("#methodSegmented .seg-btn").forEach(function(btn){
@@ -1412,6 +1423,12 @@
   redistributionSteepnessInput.addEventListener("input", function(){
     state.redistributionSteepness = parseFloat(redistributionSteepnessInput.value) || 2.5;
     document.getElementById("redistributionSteepnessValue").textContent = state.redistributionSteepness;
+    renderResults();
+    saveState();
+  });
+  voteWastageInput.addEventListener("input", function(){
+    state.voteWastage = parseFloat(voteWastageInput.value) || 0;
+    document.getElementById("voteWastageValue").textContent = state.voteWastage;
     renderResults();
     saveState();
   });
@@ -1452,6 +1469,30 @@
 
   var redistributionMap = {}; // listId -> id of the qualifying list its votes were redirected to (or null)
 
+  // Stance on federal structure: separatist voters won't transfer to a centralist party —
+  // that portion is treated as wasted/abstained rather than redistributed.
+  var partyCentralization = {
+    "EfEP": "centralist", "Arise!": "centralist",
+    "ENLM": "federalist", "EvH": "federalist", "SPC": "federalist", "FCP": "federalist",
+    "PC": "separatist"
+  };
+  function isCentralizationIncompatible(fromAbbr, toAbbr){
+    var fromCat = partyCentralization[fromAbbr], toCat = partyCentralization[toAbbr];
+    if(!fromCat || !toCat) return false;
+    return (fromCat === "separatist" && toCat === "centralist") || (fromCat === "centralist" && toCat === "separatist");
+  }
+
+  // Documented real-world relationships among the current parties, layered on top of the
+  // abstract ideological model: EvH and PC's long-standing sister-party bond, and SPC/ENLM's
+  // presidential endorsement of EvH's candidate.
+  var knownAffinities = [ ["EvH","PC"], ["EvH","SPC"], ["EvH","ENLM"] ];
+  var AFFINITY_BONUS = 2.0;
+  function hasKnownAffinity(abbrA, abbrB){
+    return knownAffinities.some(function(pair){
+      return (pair[0] === abbrA && pair[1] === abbrB) || (pair[0] === abbrB && pair[1] === abbrA);
+    });
+  }
+
   function computeSeats(){
     var survivors = state.lists.map(function(l){ return { list: l, percent: percentOf(l) }; });
     redistributionMap = {};
@@ -1468,16 +1509,26 @@
       survivors = survivors.filter(function(e){ return e !== lowest; });
 
       var lAbbr = lowest.list.abbr;
-      var weights = survivors.map(function(e){ return Math.exp(-state.redistributionSteepness * ideoDistance(lAbbr, e.list.abbr)); });
+      var weights = survivors.map(function(e){
+        var w = Math.exp(-state.redistributionSteepness * ideoDistance(lAbbr, e.list.abbr));
+        if(hasKnownAffinity(lAbbr, e.list.abbr)) w *= AFFINITY_BONUS;
+        return w;
+      });
       var totalWeight = weights.reduce(function(a,b){ return a + b; }, 0);
+      var wastedAmount = lowest.percent * (state.voteWastage / 100);
+      var redistributable = lowest.percent - wastedAmount;
       var shares = [];
       survivors.forEach(function(e, i){
-        var share = lowest.percent * (weights[i] / totalWeight);
-        e.percent += share;
-        shares.push({ id: e.list.id, abbr: e.list.abbr, share: share });
+        var share = redistributable * (weights[i] / totalWeight);
+        if(isCentralizationIncompatible(lAbbr, e.list.abbr)){
+          wastedAmount += share;
+        } else {
+          e.percent += share;
+          shares.push({ id: e.list.id, abbr: e.list.abbr, share: share });
+        }
       });
       shares.sort(function(a,b){ return b.share - a.share; });
-      redistributionMap[lowest.list.id] = shares;
+      redistributionMap[lowest.list.id] = { shares: shares, wasted: wastedAmount };
       eliminatedIds.push(lowest.list.id);
     }
 
@@ -1575,10 +1626,13 @@
       if(passed){
         badge.textContent = "Cleared " + threshold + "%";
       } else {
-        var shares = redistributionMap[list.id] || [];
+        var redist = redistributionMap[list.id];
+        var shares = redist ? redist.shares : [];
         if(shares.length){
           badge.textContent = "Below " + threshold + "% → mostly " + shares[0].abbr;
-          badge.title = shares.map(function(s){ return s.abbr + ": " + s.share.toFixed(2) + "%"; }).join(", ");
+          var parts = shares.map(function(s){ return s.abbr + ": " + s.share.toFixed(2) + "%"; });
+          if(redist.wasted > 0.005) parts.push("wasted/abstained: " + redist.wasted.toFixed(2) + "%");
+          badge.title = parts.join(", ");
         } else {
           badge.textContent = "Below " + threshold + "%";
         }
@@ -2388,7 +2442,7 @@
     return JSON.stringify({
       lists: state.lists, method: state.method,
       partyThreshold: state.partyThreshold, allianceThreshold: state.allianceThreshold,
-      redistributionSteepness: state.redistributionSteepness,
+      redistributionSteepness: state.redistributionSteepness, voteWastage: state.voteWastage,
       coalition: state.coalition
     });
   }
@@ -2411,6 +2465,7 @@
     state.partyThreshold = snap.partyThreshold;
     state.allianceThreshold = snap.allianceThreshold;
     state.redistributionSteepness = (typeof snap.redistributionSteepness === "number") ? snap.redistributionSteepness : 2.5;
+    state.voteWastage = (typeof snap.voteWastage === "number") ? snap.voteWastage : 15;
     state.coalition = snap.coalition || [];
   }
   function doUndo(){
