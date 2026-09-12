@@ -748,7 +748,7 @@
     "CCCSP": 1, "CWPE": 1, "CSAE": 1.5, "SAE": 1.5, "DSA": 1.5,
     "RSA": 1.5, "NASC": 1.5,
     "SDP": 3.5, "ROSE": 2.5, "GRASP": 3, "SOLAR": 2, "Greens": 2.5, "GA": 2.5, "GD": 2.5, "Delta": 2, "Astra": 2.5,
-    "Arise!": 3, "PC": 3.5, "SPC": 4.5, "PEC": 4, "ER": 2.5, "RLP": 2.5, "EUP": 3.5,
+    "Arise!": 3, "PC": 4, "SPC": 4.5, "PEC": 4, "ER": 2.5, "RLP": 2.5, "EUP": 3.5,
     "GFP": 5, "RES": 5, "M30": 5, "BSP": 5, "Mason": 5,
     "ECU": 6, "CLPB": 6.5, "Renewal": 6, "PIP": 5.5, "FEP": 5.5,
     "ELC": 6.5, "LFDU": 6.5, "CORE": 6, "FCP": 5, "DU": 6.5, "FTU": 6.5,
@@ -1405,7 +1405,7 @@
     nonQualifying.forEach(function(l){
       if(!qualifying.length){ redistributionMap[l.id] = []; return; }
       var lSpec = spectrumOf(l.abbr);
-      var shareWeights = qualifying.map(function(q){ return Math.exp(-3.5 * Math.abs(spectrumOf(q.abbr) - lSpec)); });
+      var shareWeights = qualifying.map(function(q){ return Math.exp(-2.5 * Math.abs(spectrumOf(q.abbr) - lSpec)); });
       var totalWeight = shareWeights.reduce(function(a,b){ return a + b; }, 0);
       var amount = percentOf(l);
       var shares = [];
