@@ -766,17 +766,17 @@
     "EfEP":   { econ: 5,   social: 8   },
     "PC":     { econ: 2.8, social: 4.2 },
     "FCP":    { econ: 6,   social: 2   },
-    "CCCSP":  { econ: 1,   social: 1   }
+    "CCCSP":  { econ: 0.3, social: 0.5 }
   };
   function econOf(abbr){ return partyEconSocial[abbr] ? partyEconSocial[abbr].econ : spectrumOf(abbr); }
   function socialOf(abbr){ return partyEconSocial[abbr] ? partyEconSocial[abbr].social : spectrumOf(abbr); }
   // How far a party's economics sit from the political center (0 = centrist, 1 = maximally extreme).
   function economicExtremity(abbr){
-    var ECON_CENTER = 5.1, ECON_SPREAD = 4.1; // derived from the actual econ range (1 to 9.2)
+    var ECON_CENTER = 4.75, ECON_SPREAD = 4.45; // derived from the actual econ range (0.3 to 9.2)
     return Math.min(1, Math.abs(econOf(abbr) - ECON_CENTER) / ECON_SPREAD);
   }
   function socialExtremity(abbr){
-    var SOCIAL_CENTER = 4.5, SOCIAL_SPREAD = 3.5; // derived from the actual social range (1 to 8)
+    var SOCIAL_CENTER = 4.25, SOCIAL_SPREAD = 3.75; // derived from the actual social range (0.5 to 8)
     return Math.min(1, Math.abs(socialOf(abbr) - SOCIAL_CENTER) / SOCIAL_SPREAD);
   }
   // Distance as seen FROM fromAbbr's perspective when redistributing its votes: whichever
