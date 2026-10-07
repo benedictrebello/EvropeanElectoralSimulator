@@ -7,139 +7,73 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%2307295e'/%3E%3Cpolygon points='50,20 58,42 82,42 62,56 70,78 50,64 30,78 38,56 18,42 42,42' fill='%23a9812e'/%3E%3C/svg%3E">
 <meta name="description" content="Interactive seat-allocation simulator for the Evropean Assembly" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700;6..72,800&family=Inter:wght@400;500;600;700&display=swap">
+<meta name="theme-color" content="#07295e">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
-
-  :root{
-    --paper: #efeae0;
-    --paper-raised: #ffffff;
-    --ink: #1e1b16;
-    --ink-soft: #55503f;
-    --navy: #07295e;
-    --navy-soft: #123a7a;
-    --blue: #3670ce;
-    --blue-soft: #5c8be0;
-    --gold: #a9812e;
-    --gold-soft: #cba75c;
-    --line: #ded8c9;
-    --line-soft: #ece7db;
-    --teal: #3e6259;
-    --danger: #97402f;
-    --good: #2f6d3a;
-    --radius: 14px;
-    --radius-sm: 8px;
-    --shadow: 0 1px 2px rgba(7,41,94,.06), 0 12px 28px -16px rgba(7,41,94,.28);
-    --serif: 'Montserrat', 'Segoe UI', sans-serif;
-    --sans: 'IBM Plex Sans', 'Segoe UI', sans-serif;
-  }
-
-  html.dark{
-    --paper: #0e1320;
-    --paper-raised: #161c2c;
-    --ink: #eceef4;
-    --ink-soft: #a3aac0;
-    --line: #2a3247;
-    --line-soft: #202739;
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -16px rgba(0,0,0,.6);
-  }
+  :root{ --navy: #07295e; --navy-soft: #123a7a; --blue: #3670ce; --blue-soft: #5c8be0; --gold: #a9812e; --gold-soft: #cba75c; --teal: #3e6259; --danger: #97402f; --good: #2f6d3a; }
+  html.dark{ --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -16px rgba(0,0,0,.6); }
   html.dark .badge.pass{ background: #16321d; color: #86d19a; }
   html.dark .badge.fail{ background: #3a201d; color: #e2948a; }
   html.dark .swing-flat{ color: var(--ink-soft); }
-
   *{ box-sizing: border-box; }
   html{ scroll-behavior: smooth; }
-  body{
-    margin:0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--sans);
-    line-height:1.5;
-    -webkit-font-smoothing: antialiased;
-    transition: background .15s, color .15s;
-  }
+  body{ margin: 0; color: var(--ink); font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased; transition: background .15s, color .15s; }
   a{ color: inherit; }
-  h1,h2,h3{ font-family: var(--serif); font-weight:800; margin:0; color: var(--navy); letter-spacing: -0.01em; }
+  h1, h2, h3{ font-family: var(--serif); margin: 0; color: var(--navy); }
   html.dark h1, html.dark h2, html.dark h3{ color: #ffffff; }
   button{ font-family: var(--sans); cursor:pointer; }
   input, select{ font-family: var(--sans); }
-
-  .wrap{ max-width: 1080px; margin: 0 auto; padding: 0 28px; }
-
+  .wrap{ margin: 0 auto; padding: 0 28px; }
   /* Header */
-  header{
-    position: sticky; top:0; z-index: 50;
-    background: var(--navy);
-    color: var(--paper);
-    border-bottom: 3px solid var(--gold);
-  }
-  header .wrap{
-    display:flex; align-items:center; justify-content:space-between;
-    min-height: 64px; gap: 16px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px;
-  }
-  .brand{ display:flex; align-items:baseline; gap:10px; flex-shrink:0; }
-  .brand .mark{
-    font-family: var(--serif); font-weight:800; font-size: clamp(0.92rem, 1.5vw, 1.2rem); letter-spacing: .02em;
-    text-transform: uppercase; color: #ffffff; white-space: nowrap;
-  }
-  .brand .sub{ font-size: .78rem; color: var(--gold-soft); white-space:nowrap; }
+  header{ position: sticky; top: 0; z-index: 50; }
+  header .wrap{ display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; }
+  .brand{ display: flex; flex-shrink: 0; }
+  .brand .mark{ white-space: nowrap; }
+  .brand .sub{ white-space: nowrap; }
   .header-right{ display:flex; align-items:center; gap: 18px; flex-wrap: wrap; row-gap: 8px; }
-  nav{ display:flex; gap: 18px; flex-wrap: wrap; row-gap: 6px; }
-  nav a{
-    text-decoration:none; font-size: .88rem; color: #ffffff; opacity:.82;
-    border-bottom: 2px solid transparent; padding-bottom: 3px; white-space:nowrap;
-  }
-  nav a:hover{ opacity:1; border-color: var(--gold); }
-  nav a.active{ opacity:1; border-color: var(--gold); font-weight:600; }
-  .theme-toggle{
-    border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.08); color: var(--paper);
-    padding: 6px 12px; border-radius: 999px; font-size: .8rem; font-weight:600; flex-shrink:0;
-  }
-  .theme-toggle:hover{ background: rgba(255,255,255,.18); }
-  .header-badge{
-    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); color:#fff;
-    font-family: var(--serif); font-weight:700; font-size: .78rem; padding: 5px 12px; border-radius: 999px;
-    white-space:nowrap; flex-shrink:0;
-  }
-
-  /* Hero */
-  .hero{ padding: 28px 0 40px; }
-  .hero .card{
-    background: linear-gradient(135deg, var(--navy), var(--blue));
-    border-radius: var(--radius);
-    padding: 44px 44px 36px;
-    box-shadow: var(--shadow);
-    position: relative;
-    overflow: hidden;
-  }
-  .hero .content{ position: relative; z-index: 1; max-width: 640px; }
-  .star-ring{
-    position: absolute; top: 50%; right: -130px; transform: translateY(-50%);
-    width: 420px; height: 420px; opacity: .16; pointer-events: none;
-  }
+  nav{ display: flex; flex-wrap: wrap; row-gap: 6px; }
+  nav a{ text-decoration: none; border-bottom: 2px solid transparent; padding-bottom: 3px; white-space: nowrap; }
+  nav a:hover{ opacity: 1; border-color: var(--gold); }
+  nav a.active{ opacity: 1; border-color: var(--gold); }
+  .theme-toggle{ border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.08); color: var(--paper); padding: 6px 12px; border-radius: 999px; font-size: .8rem; font-weight:600; flex-shrink:0; }
+  .header-badge{ background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); color:#fff; font-family: var(--serif); font-weight:700; font-size: .78rem; padding: 5px 12px; border-radius: 999px; white-space:nowrap; flex-shrink:0; }
+  .hero .card{ box-shadow: var(--shadow); position: relative; overflow: hidden; }
+  .hero .content{ position: relative; z-index: 1; }
+  .star-ring{ position: absolute; top: 50%; right: -130px; transform: translateY(-50%); width: 420px; height: 420px; opacity: .16; pointer-events: none; }
   .star-ring path{ fill: #ffffff; }
-  .section-eyebrow{ font-size: .72rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color: var(--gold); margin-bottom: 4px; }
-
+  .section-eyebrow{ text-transform: uppercase; }
+  section#standings{ --accent: #a9812e; }
+  section#lists{ --accent: #3670ce; }
+  section#results{ --accent: #07295e; }
+  section#compass{ --accent: #822194; }
+  section#explainer{ --accent: #0d7a6e; }
+  section#history{ --accent: #8a5a2b; }
+  section#glossary{ --accent: #1e8f72; }
+  section#lineage{ --accent: #2f7d3a; }
+  section#senate{ --accent: #0f6b66; }
+  section#regions{ --accent: #c17a1f; }
+  section#config{ --accent: #5a5248; }
+  .section-head{ position: relative; }
+  .section-toggle{ margin-left: auto; background: var(--paper); border: 1px solid var(--line); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: transform .15s ease; }
+  html.dark .section-toggle{ color:#fff; border-color: rgba(255,255,255,.2); background: rgba(255,255,255,.06); }
+  .section-toggle:hover{ border-color: var(--accent, var(--blue)); }
+  .subsection.section-collapsed > *:not(.section-head){ display:none !important; }
+  .subsection.section-collapsed .section-toggle{ transform: rotate(-90deg); }
   .standings-grid{ display:flex; gap:14px; flex-wrap:wrap; }
-  .standing-card{ flex:1; min-width:160px; background:var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius-sm); padding:14px 16px; }
-  .standing-card .label{ font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; }
-  .standing-card .value{ font-family: var(--serif); font-weight:800; font-size:1.25rem; color:var(--navy); margin-top:3px; }
+  .standing-card{ flex: 1; min-width: 160px; background: var(--paper-raised); border: 1px solid var(--line); }
+  .standing-card .label{ color: var(--ink-soft); text-transform: uppercase; }
+  .standing-card .value{ font-family: var(--serif); color: var(--navy); margin-top: 3px; }
   html.dark .standing-card .value{ color:#fff; }
   .standing-card .sub{ font-size:.78rem; color:var(--ink-soft); margin-top:2px; }
-
   .election-timeline{ display:flex; gap:4px; overflow-x:auto; padding: 4px 2px 10px; margin-bottom: 14px; }
-  .election-timeline .yr-btn{
-    flex:0 0 auto; border:1px solid var(--line); background: var(--paper-raised); color: var(--ink-soft);
-    font-size:.72rem; padding: 4px 8px; border-radius: 999px; cursor:pointer; white-space:nowrap;
-  }
+  .election-timeline .yr-btn{ flex: 0 0 auto; border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink-soft); padding: 4px 8px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
   .election-timeline .yr-btn:hover{ border-color: var(--blue-soft); }
   .election-timeline .yr-btn.active{ background: var(--blue); border-color: var(--blue); color:#fff; font-weight:700; }
   .election-timeline .yr-divider{ flex:0 0 auto; align-self:center; width:1px; height:20px; background: var(--danger); margin: 0 4px; }
-
   .glossary-list{ display:flex; flex-direction:column; gap:10px; }
-  .glossary-card{ display:flex; gap:14px; padding:12px 14px; background:var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius-sm); }
-  .glossary-card .g-badge{
-    flex-shrink:0; width:34px; height:34px; border-radius: 8px; border: 1px solid rgba(0,0,0,.15);
-  }
+  .glossary-card{ display: flex; gap: 14px; padding: 12px 14px; background: var(--paper-raised); border: 1px solid var(--line); }
+  .glossary-card .g-badge{ flex-shrink:0; width:34px; height:34px; border-radius: 8px; border: 1px solid rgba(0,0,0,.15); }
   .glossary-card .g-body{ flex:1; min-width:0; }
   .glossary-card .g-name{ font-weight:700; font-size: .92rem; }
   .glossary-card .g-name .g-abbr{ color: var(--ink-soft); font-weight:500; }
@@ -147,166 +81,104 @@
   .glossary-card .g-ideology{ font-size: .82rem; margin-top:5px; }
   .glossary-card .g-notes{ font-size: .8rem; margin-top:5px; color: var(--ink-soft); font-style: italic; }
   .glossary-empty{ text-align:center; color: var(--ink-soft); padding: 20px; font-size: .88rem; }
-
+  .explainer-steps{ display:flex; flex-direction:column; gap:14px; }
+  .explainer-step{ display:flex; gap:14px; }
+  .explainer-step .num{ flex-shrink:0; width:28px; height:28px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-weight:800; font-size:.85rem; }
+  .explainer-step .body h3{ margin-bottom: 3px; }
+  .explainer-step .body p{ font-size: .88rem; color: var(--ink-soft); }
+  .explainer-step .body code{ background: var(--line-soft); padding: 1px 5px; border-radius:4px; font-size:.85em; }
   .lineage-chain{ margin-bottom: 20px; }
   .lineage-chain .lineage-title{ font-weight:700; font-size: .88rem; margin-bottom: 8px; color: var(--navy); }
   html.dark .lineage-chain .lineage-title{ color:#fff; }
   .lineage-row{ display:flex; align-items:center; flex-wrap:wrap; gap:0; }
-  .lineage-node{
-    display:flex; align-items:center; gap:6px; padding: 6px 12px; border-radius: 999px;
-    font-size: .78rem; font-weight:700; border: 1px solid rgba(0,0,0,.15); white-space:nowrap;
-  }
+  .lineage-node{ display:flex; align-items:center; gap:6px; padding: 6px 12px; border-radius: 999px; font-size: .78rem; font-weight:700; border: 1px solid rgba(0,0,0,.15); white-space:nowrap; }
   .lineage-node .dot{ width:8px; height:8px; border-radius:50%; }
   .lineage-arrow{ color: var(--ink-soft); font-size: .9rem; margin: 0 8px; }
   .lineage-plus{ color: var(--ink-soft); font-size: .85rem; margin: 0 4px; font-weight:700; }
   .filter-pill.active{ background: var(--blue); border-color: var(--blue); color: #fff; }
   .g-tag{ display:inline-block; font-size: .68rem; font-weight:700; padding: 1px 7px; border-radius: 999px; margin-left:7px; vertical-align:middle; background: var(--line-soft); color: var(--ink-soft); }
-
   .segmented{ display:flex; border: 1px solid var(--line); border-radius: 999px; overflow:hidden; width:fit-content; }
-  .segmented .seg-btn{
-    border:none; background: transparent; color: var(--ink-soft); font-size: .82rem; font-weight:600;
-    padding: 7px 14px; cursor:pointer; border-right: 1px solid var(--line);
-  }
+  .segmented .seg-btn{ border:none; background: transparent; color: var(--ink-soft); font-size: .82rem; font-weight:600; padding: 7px 14px; cursor:pointer; border-right: 1px solid var(--line); }
   .segmented .seg-btn:last-child{ border-right:none; }
   .segmented .seg-btn.active{ background: var(--blue); color:#fff; }
   .segmented .seg-btn:hover:not(.active){ background: var(--line-soft); }
-  .hero .eyebrow{
-    color: rgba(255,255,255,.7); font-size: .78rem; font-weight:700; letter-spacing:.08em;
-    text-transform: uppercase; margin-bottom: 10px;
-  }
-  .hero h1{ font-size: clamp(1.9rem, 3.2vw, 2.7rem); line-height:1.15; max-width: 16ch; color: #ffffff; }
-  .hero p.lede{ margin-top:14px; max-width: 46ch; color: rgba(255,255,255,.78); font-size: 1rem; }
-  .facts{ margin-top: 28px; display:flex; gap: 12px; flex-wrap:wrap; }
-  .fact{
-    flex:1; min-width: 140px; padding: 14px 16px;
-    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18);
-    border-radius: var(--radius-sm);
-  }
-  .fact .n{ font-family: var(--serif); font-weight:800; font-size: 1.6rem; color:#ffffff; font-variant-numeric: tabular-nums; }
-  .fact .l{ font-size: .76rem; color: rgba(255,255,255,.72); margin-top:2px; }
-
-  /* Sections */
-  section{ padding: 56px 0; border-bottom: 1px solid var(--line); }
+  .hero .eyebrow{ font-weight: 700; text-transform: uppercase; }
+  .hero h1{ color: #ffffff; }
+  .facts{ flex-wrap: wrap; }
+  .fact{ flex: 1; }
+  .fact .n{ color: #ffffff; font-variant-numeric: tabular-nums; }
+  .fact .l{ margin-top: 2px; }
   section.last{ border-bottom:none; }
-  .section-head{ display:flex; flex-direction:column; gap: 8px; margin-bottom: 26px; }
-  .section-head .head-row{ display:flex; justify-content:space-between; align-items:flex-end; gap: 24px; flex-wrap:wrap; }
-  .section-head h2{ font-size: 1.5rem; }
-  .section-head .note{ font-size: .88rem; color: var(--ink-soft); }
-
+  .section-head{ display: flex; flex-direction: column; }
+  .section-head .head-row{ display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
   /* Buttons */
-  .btn{
-    border:1px solid var(--navy); background: transparent; color: var(--navy);
-    padding: 9px 18px; border-radius: var(--radius-sm); font-size: .88rem; font-weight:600;
-    transition: background .15s, color .15s;
-  }
+  .btn{ border: 1px solid var(--navy); background: transparent; color: var(--navy); transition: background .15s, color .15s; }
   html.dark .btn{ border-color: var(--blue-soft); color: var(--blue-soft); }
   .btn:hover{ background: var(--navy); color: #fff; }
   html.dark .btn:hover{ background: var(--blue-soft); color: var(--navy); }
-  .btn.primary{ background: var(--blue); border-color: var(--blue); color: #ffffff; }
-  .btn.primary:hover{ background: var(--navy); border-color: var(--navy); }
-  .btn.gold{ border-color: var(--gold); color: var(--gold); }
-  .btn.gold:hover{ background: var(--gold); color: #fff; }
+  .btn.primary{ color: #ffffff; }
   .btn.ghost{ border-color: var(--line); color: var(--ink-soft); }
   .btn.ghost:hover{ background: var(--ink); color: var(--paper); border-color: var(--ink); }
   .btn.small{ padding: 5px 10px; font-size: .78rem; }
   .btn.icon{ padding: 5px 9px; }
   .btn[disabled]{ opacity:.4; cursor:not-allowed; }
   .btn[disabled]:hover{ background:transparent; color:var(--navy); }
-
   .row-actions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
   .copy-note{ font-size: .78rem; color: var(--good); font-weight:600; opacity:0; transition: opacity .2s; }
   .copy-note.show{ opacity:1; }
-
   /* Table */
   table{ width:100%; border-collapse: collapse; }
   .table-scroll{ overflow-x:auto; }
-  @media (max-width: 700px){ .table-scroll table{ min-width: 640px; } }
-  th{
-    text-align:left; font-size: .76rem; color: var(--ink-soft); font-weight:600;
-    padding: 0 10px 8px; border-bottom: 1px solid var(--line);
+  @media (max-width: 700px){
+    .table-scroll table{ min-width: 640px; }
   }
-  td{ padding: 9px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+  th{ text-align: left; color: var(--ink-soft); font-weight: 600; padding: 0 10px 8px; border-bottom: 1px solid var(--line); }
+  td{ border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
   tr.total-row td{ border-bottom:none; border-top: 2px solid var(--ink); font-weight:600; padding-top:12px; }
   .num{ font-variant-numeric: tabular-nums; text-align:right; }
-
   .swatch{ width:20px; height:20px; border-radius:50%; border:1px solid rgba(0,0,0,.25); display:inline-block; vertical-align:middle; padding:0; }
   input[type=color]{ -webkit-appearance:none; border:none; background:none; }
   input[type=color]::-webkit-color-swatch-wrapper{ padding:0; }
   input[type=color]::-webkit-color-swatch{ border-radius:50%; border:1px solid rgba(0,0,0,.25); }
-
-  input[type=text], input[type=number], input[type=search]{
-    border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink);
-    padding: 7px 10px; border-radius: var(--radius-sm); font-size: .88rem; width: 100%;
-  }
-  input[type=text]:focus, input[type=number]:focus, input[type=search]:focus, select:focus{
-    outline: 2px solid var(--gold-soft); outline-offset:1px;
-  }
-  select{
-    border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink);
-    padding: 7px 10px; border-radius: var(--radius-sm); font-size: .85rem;
-  }
+  input[type=text], input[type=number], input[type=search]{ border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink); padding: 7px 10px; border-radius: var(--radius-sm); font-size: .88rem; width: 100%; }
+  input[type=text]:focus, input[type=number]:focus, input[type=search]:focus, select:focus{ outline: 2px solid var(--gold-soft); outline-offset:1px; }
+  select{ border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink); padding: 7px 10px; border-radius: var(--radius-sm); font-size: .85rem; }
   td.name-cell input{ min-width: 130px; }
   td.abbr-cell input{ width: 60px; }
   td.pct-cell input{ width: 68px; text-align:right; }
   td.prev-cell input{ width: 68px; text-align:right; }
   td.type-cell select{ width: 100%; }
   td.check-cell{ text-align:center; width: 30px; }
-  input[type=checkbox]{
-    -webkit-appearance:none; appearance:none;
-    width:18px; height:18px; border-radius: 5px;
-    border: 1.5px solid var(--line); background: var(--paper-raised);
-    cursor:pointer; position:relative; vertical-align:middle;
-    transition: background .12s, border-color .12s;
-  }
+  input[type=checkbox]{ -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius: 5px; border: 1.5px solid var(--line); background: var(--paper-raised); cursor:pointer; position:relative; vertical-align:middle; transition: background .12s, border-color .12s; }
   input[type=checkbox]:hover{ border-color: var(--blue-soft); }
   input[type=checkbox]:checked{ background: var(--blue); border-color: var(--blue); }
-  input[type=checkbox]:checked::after{
-    content:""; position:absolute; left:5px; top:1px;
-    width:5px; height:9px; border: solid #ffffff; border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-  }
-
+  input[type=checkbox]:checked::after{ content:""; position:absolute; left:5px; top:1px; width:5px; height:9px; border: solid #ffffff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
   tr.list-row td:first-child{ border-left: 5px solid var(--row-accent, transparent); }
   tr.list-row td{ background: var(--row-accent-faint, transparent); }
-
   tr.member-row td{ padding-top:6px; padding-bottom:6px; background: var(--line-soft); }
   tr.member-row td:first-child{ border-left: 5px dotted var(--line); position:relative; }
   tr.member-row .name-cell input, tr.member-row .abbr-cell input{ font-size: .82rem; }
   tr.add-member-row td{ padding-top:4px; padding-bottom:10px; border-bottom: 1px solid var(--line); }
-
   .legend{ display:flex; flex-wrap:wrap; gap: 10px 18px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-soft); }
   .legend-item{ display:flex; align-items:center; gap:7px; font-size: .8rem; color: var(--ink-soft); }
-  .legend-item .chip{
-    width: 18px; height:18px; border-radius: 6px; flex-shrink:0; border: 1px solid rgba(0,0,0,.15);
-  }
+  .legend-item .chip{ width: 18px; height:18px; border-radius: 6px; flex-shrink:0; border: 1px solid rgba(0,0,0,.15); }
   .legend-item .n{ font-family: var(--serif); font-weight:800; color: var(--ink); }
-
-  .badge{ display:inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 999px; font-weight:600; }
+  .badge{ display: inline-block; border-radius: 999px; font-weight: 600; }
   .badge.pass{ background: #dfe8db; color: #33532d; }
   .badge.fail{ background: #f0ddd7; color: var(--danger); }
-
   .swing{ font-size: .82rem; font-weight:700; white-space:nowrap; }
   .swing-up{ color: var(--good); }
   .swing-down{ color: var(--danger); }
   .swing-flat{ color: var(--ink-soft); }
-
   .total-line{ display:flex; align-items:center; gap:14px; margin-top: 16px; flex-wrap:wrap; }
   .total-line .amount{ font-family: var(--serif); font-size:1.1rem; }
   .total-line .amount.off{ color: var(--danger); }
-
   /* Hemicycle + results layout */
   .results-grid{ display:flex; flex-direction:column; gap: 32px; }
-  .card{
-    background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius);
-    padding: 20px; box-shadow: var(--shadow);
-  }
-  .hemi-card{
-    background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius);
-    padding: 18px 18px 8px; box-shadow: var(--shadow);
-  }
+  .card{ background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+  .hemi-card{ background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
   .hemi-card svg{ width:100%; height:auto; display:block; }
   .majority-note{ text-align:center; font-size: .82rem; color: var(--ink-soft); margin-top: -4px; padding-bottom: 12px; }
-
   .seat-share-bar{ display:flex; height: 20px; border-radius: 4px; overflow:hidden; margin: 4px 0 6px; border: 1px solid var(--line); }
   .seat-share-bar .seg{ height:100%; }
   .seat-share-axis{ position:relative; height: 30px; margin-bottom: 10px; }
@@ -314,20 +186,8 @@
   .seat-share-axis .tick.majority{ top:14px; color: var(--danger); font-weight:700; }
   .seat-share-axis .tick-line{ position:absolute; top:-10px; width:1px; height:6px; background: var(--line); }
   .seat-share-axis .tick-line.majority{ height: 20px; background: var(--danger); }
-
-  .alliance-block{ margin-top: 18px; border:1px dashed var(--line); border-radius: var(--radius); padding: 12px 14px; }
-  .alliance-block summary{ cursor:pointer; font-size: .88rem; font-weight:600; color: var(--navy); }
-  html.dark .alliance-block summary{ color: var(--blue-soft); }
-  .alliance-block table{ margin-top: 12px; }
-  .alliance-block .prev-cell-h{ width: 70px; }
-
   .results-toolbar{ margin-bottom: 14px; max-width: 320px; }
-
-  .coalition-bar{
-    display:flex; align-items:center; justify-content:space-between; gap: 16px; flex-wrap:wrap;
-    background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius-sm);
-    padding: 12px 16px; margin-bottom: 14px;
-  }
+  .coalition-bar{ display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; background: var(--paper-raised); border: 1px solid var(--line); margin-bottom: 14px; }
   .coalition-bar .info{ font-size: .88rem; }
   .coalition-bar .info b{ font-family: var(--serif); font-weight:800; }
   .coalition-status{ font-size: .78rem; padding: 3px 10px; border-radius: 999px; font-weight:700; }
@@ -335,44 +195,28 @@
   .coalition-status.no{ background:#f0ddd7; color:var(--danger); }
   html.dark .coalition-status.yes{ background:#16321d; color:#86d19a; }
   html.dark .coalition-status.no{ background:#3a201d; color:#e2948a; }
-
-  /* Regions placeholder */
-  .stub{
-    border: 1px dashed var(--line); border-radius: var(--radius); padding: 32px;
-    text-align:center; color: var(--ink-soft); background: var(--paper-raised);
-  }
-  .stub .glyphs{ display:flex; justify-content:center; gap:10px; margin-bottom:16px; }
-  .stub .glyphs span{ width:34px; height:34px; border:1px solid var(--line); border-radius:50%; }
-
   /* History chart */
-  .history-card{
-    background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius);
-    padding: 20px; box-shadow: var(--shadow);
-  }
+  .history-card{ background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
   .history-card svg{ width:100%; height:auto; display:block; }
   .history-card .axis-label{ font-size: 9px; fill: var(--ink-soft); font-family: var(--sans); }
   .history-card .gridline{ stroke: var(--line-soft); stroke-width: 1; }
-  .history-legend{ display:flex; flex-wrap:wrap; gap: 10px 18px; margin-top: 14px; }
-
+  #compassSvg .axis-label{ font-size: 11px; fill: var(--ink-soft); font-family: var(--sans); }
+  #compassSvg .gridline{ stroke: var(--line-soft); stroke-width: 1; }
   /* Config */
   .config-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
   .field{ display:flex; flex-direction:column; gap:6px; }
   .field label{ font-size: .8rem; color: var(--ink-soft); }
   .field .help{ font-size: .74rem; color: var(--ink-soft); opacity:.85; }
-
-  footer{ padding: 32px 0 60px; }
   footer .wrap{ display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap; }
   footer .cite{ font-size: .78rem; color: var(--ink-soft); max-width: 52ch; }
   footer .brand-mini{ font-family: var(--serif); font-weight:600; color: var(--navy); }
   html.dark footer .brand-mini{ color: #fff; }
-
   @media (max-width: 1400px){
     .brand .sub{ display:none; }
     .header-badge{ display:none; }
     nav{ gap: 13px; }
     nav a{ font-size: .82rem; }
   }
-
   @media (max-width: 860px){
     .config-grid{ grid-template-columns: 1fr; }
     #mainNav{ display:none; }
@@ -380,18 +224,86 @@
     .fact{ flex: 1 1 45%; }
     .star-ring{ right: -220px; opacity: .1; }
   }
-  .nav-toggle{
-    display:none; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.08); color:#fff;
-    width:38px; height:34px; border-radius: 8px; font-size: 1.1rem; cursor:pointer; flex-shrink:0;
-  }
+  .nav-toggle{ display: none; width: 38px; height: 34px; border-radius: 8px; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; }
   @media (max-width: 860px){
     .nav-toggle{ display:block; }
-    #mainNav.open{
-      display:flex; flex-direction:column; gap: 2px; position:absolute; left:0; right:0; top:100%;
-      background: var(--navy); border-bottom: 3px solid var(--gold); padding: 10px 28px 16px;
-    }
+    #mainNav.open{ display:flex; flex-direction:column; gap: 2px; position:absolute; left:0; right:0; top:100%; background: var(--navy); border-bottom: 3px solid var(--gold); padding: 10px 28px 16px; }
     #mainNav.open a{ padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.12); }
   }
+  /* ===== Refined theme (v4) ===== */
+  :root{ --paper:#f6f5f1; --paper-raised:#ffffff; --ink:#17202e; --ink-soft:#5d6575; --line:#e4e2da; --line-soft:#efede7; --brand:#123a7a; --radius:16px; --radius-sm:10px; --shadow:0 1px 2px rgba(16,24,40,.04), 0 8px 24px -14px rgba(16,24,40,.14); --serif:'Newsreader','Georgia',serif; --sans:'Inter','Segoe UI',sans-serif; }
+  html.dark{ --paper:#0d121d; --paper-raised:#151b2a; --ink:#eceef4; --ink-soft:#a3aac0; --line:#262e43; --line-soft:#1d2437; --brand:#8fb0ee; }
+  body{ background: radial-gradient(900px 420px at 12% -80px, rgba(54,112,206,.09), transparent 70%), var(--paper); background-attachment: fixed; font-size:15px; }
+  html.dark body{ background: var(--paper); }
+  h1, h2, h3{ font-weight:700; letter-spacing:-.015em; }
+  .wrap{ max-width:1120px; }
+  header{ background: rgba(255,255,255,.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom:1px solid var(--line); color:var(--ink); }
+  html.dark header{ background: rgba(21,27,42,.88); }
+  header .wrap{ min-height:58px; }
+  .brand{ align-items:center; gap:10px; }
+  .brand .logo{ width:30px; height:30px; flex-shrink:0; }
+  .brand .logo svg{ width:100%; height:100%; display:block; }
+  .brand-text{ display:flex; flex-direction:column; line-height:1.15; }
+  .brand .mark{ font-family:var(--serif); font-size:.98rem; font-weight:700; text-transform:none; letter-spacing:0; color:var(--navy); }
+  html.dark .brand .mark{ color:#fff; }
+  .brand .sub{ font-size:.66rem; color:var(--ink-soft); }
+  nav{ gap:2px; padding:3px; border:1px solid var(--line); border-radius:12px; background:var(--paper-raised); }
+  nav a{ color:var(--ink-soft); opacity:1; font-size:.76rem; font-weight:500; padding:5px 10px; border:none; border-radius:8px; }
+  nav a:hover{ background:var(--line-soft); color:var(--ink); border:none; }
+  nav a.active{ background:var(--navy); color:#fff; font-weight:600; border:none; }
+  html.dark nav a.active{ background:var(--blue); }
+  .theme-toggle, .header-badge{ background:var(--paper-raised); border:1px solid var(--line); color:var(--ink-soft); font-family:var(--sans); font-size:.72rem; font-weight:600; padding:6px 11px; border-radius:9px; }
+  .theme-toggle:hover{ background:var(--line-soft); }
+  .nav-toggle{ border:1px solid var(--line); background:var(--paper-raised); color:var(--ink); }
+  @media (max-width:860px){
+    #mainNav.open{ background:var(--paper-raised); border:none; border-bottom:1px solid var(--line); border-radius:0; padding:10px 20px 14px; }
+    #mainNav.open a{ border-bottom:1px solid var(--line-soft); border-radius:0; padding:9px 0; }
+    #mainNav.open a.active{ background:transparent; color:var(--navy); }
+  }
+  .hero{ padding:22px 0 8px; }
+  .hero .card{ background: linear-gradient(135deg, #061f47 0%, var(--navy) 45%, #1a4a96 100%); border:none; border-radius:20px; padding:40px 44px 34px; }
+  .hero .content{ max-width:none; }
+  .hero .eyebrow{ font-size:.66rem; letter-spacing:.14em; color:rgba(255,255,255,.62); margin-bottom:14px; }
+  .hero h1{ font-size:clamp(2rem,4.2vw,3.1rem); line-height:1.04; max-width:20ch; font-weight:700; letter-spacing:-.02em; }
+  .hero p.lede{ font-size:.86rem; max-width:52ch; margin-top:14px; color:rgba(255,255,255,.72); }
+  .facts{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:30px; }
+  .fact{ min-width:0; padding:13px 16px 14px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.16); border-radius:12px; }
+  .fact .l{ font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.6); margin:0 0 6px; }
+  .fact .n{ font-family:var(--serif); font-size:1.7rem; font-weight:700; line-height:1; }
+  .fact .s{ font-size:.66rem; color:rgba(255,255,255,.58); margin-top:6px; }
+  @media (max-width:860px){
+    .facts{ grid-template-columns:repeat(2,1fr); }
+    .hero .card{ padding:30px 24px 26px; }
+  }
+  section{ padding:34px 0; border-bottom:none; }
+  section.hero{ padding:22px 0 8px; }
+  section#standings, section#lists, section#results, section#compass, section#explainer, section#history, section#glossary, section#lineage, section#senate, section#regions, section#config{ --accent: var(--brand); }
+  .subsection + .subsection{ margin-top:44px; }
+  .section-head{ padding-left:0; border-left:none; gap:4px; margin-bottom:18px; }
+  .section-eyebrow{ font-size:.62rem; font-weight:700; letter-spacing:.14em; color:var(--accent); margin-bottom:2px; }
+  .section-head h2{ font-size:1.65rem; line-height:1.1; }
+  .section-head .note{ font-size:.78rem; color:var(--ink-soft); max-width:62ch; margin:2px 0 0; }
+  .section-head .head-row{ align-items:center; }
+  .section-toggle{ width:28px; height:28px; border-radius:8px; font-size:12px; color:var(--ink-soft); box-shadow:none; }
+  .card, .hemi-card, .history-card{ border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); }
+  .hemi-card{ padding:16px 18px 6px; }
+  .standing-card{ border-radius:12px; box-shadow:var(--shadow); padding:14px 16px; }
+  .standing-card .label{ font-size:.6rem; letter-spacing:.1em; }
+  .standing-card .value{ font-size:1.45rem; font-weight:700; }
+  .glossary-card{ border-radius:12px; box-shadow:var(--shadow); }
+  .coalition-bar{ border-radius:12px; padding:10px 14px; font-size:.82rem; }
+  th{ font-size:.6rem; letter-spacing:.1em; }
+  td{ padding:7px 10px; font-size:.84rem; }
+  .btn{ border-radius:9px; padding:7px 14px; font-size:.78rem; font-weight:600; }
+  .btn.primary{ background:var(--navy); border-color:var(--navy); }
+  .btn.primary:hover{ background:var(--blue); border-color:var(--blue); }
+  html.dark .btn.primary{ background:var(--blue); border-color:var(--blue); color:#fff; }
+  .btn.gold{ border-color:var(--line); color:var(--ink-soft); }
+  .btn.gold:hover{ background:var(--navy); border-color:var(--navy); color:#fff; }
+  .badge{ font-size:.66rem; padding:2px 8px; }
+  .election-timeline .yr-btn{ font-size:.68rem; }
+  .explainer-step .body h3{ font-size:1rem; }
+  footer{ border-top:1px solid var(--line); margin-top:20px; padding:26px 0 48px; }
 </style>
 </head>
 <body>
@@ -399,8 +311,8 @@
 <header>
   <div class="wrap">
     <div class="brand">
-      <span class="mark">Evropean Assembly Simulator</span>
-      <span class="sub">Election simulator</span>
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#07295e"/><polygon points="50,20 58,42 82,42 62,56 70,78 50,64 30,78 38,56 18,42 42,42" fill="#cba75c"/></svg></span>
+      <span class="brand-text"><span class="mark">Evropean Assembly Simulator</span><span class="sub">Election simulator &middot; Second Republic</span></span>
     </div>
     <div class="header-right">
       <div class="header-badge" id="headerBadge">— / 720 seats</div>
@@ -408,9 +320,11 @@
         <a href="#standings">Standings</a>
         <a href="#lists">Electoral lists</a>
         <a href="#results">Seat composition</a>
+        <a href="#compass">Compass</a>
         <a href="#history">History</a>
         <a href="#glossary">Glossary</a>
         <a href="#lineage">Lineage</a>
+        <a href="#senate">Senate</a>
         <a href="#regions">Regions</a>
         <a href="#config">Configuration</a>
       </nav>
@@ -439,12 +353,13 @@
       </svg>
       <div class="content">
         <div class="eyebrow">Election simulator</div>
-        <h1>From one Evropa-wide result to all 720 seats of the Assembly.</h1>
-        <p class="lede">Enter the national result of each list, and the simulator applies the electoral threshold and seat formula to fill the Evropean Assembly.</p>
+        <h1>From one Evropa-wide result to every seat of the Assembly.</h1>
+        <p class="lede">Enter each list's national vote share. The simulator applies the threshold, redistributes failed votes and fills the chamber.</p>
         <div class="facts">
-          <div class="fact"><div class="n">720</div><div class="l">Assembly seats</div></div>
-          <div class="fact"><div class="n">5% / 7%</div><div class="l">Threshold, party / alliance</div></div>
-          <div class="fact"><div class="n">361</div><div class="l">Seats for a majority</div></div>
+          <div class="fact"><div class="l">Assembly</div><div class="n">720</div><div class="s">Proportional seats</div></div>
+          <div class="fact"><div class="l">Senate</div><div class="n">21</div><div class="s">3 senators &times; 7 regions</div></div>
+          <div class="fact"><div class="l">Thresholds</div><div class="n">5% / 7%</div><div class="s">Party / alliance</div></div>
+          <div class="fact"><div class="l">Majority</div><div class="n">361</div><div class="s">Seats to govern</div></div>
         </div>
       </div>
     </div>
@@ -453,18 +368,22 @@
 
 <section id="standings">
   <div class="wrap">
-    <div class="section-head">
-      <div class="section-eyebrow">At a glance</div>
-      <div class="head-row"><h2>Current standings</h2></div>
+    <div class="subsection">
+      <div class="section-head">
+        <div class="section-eyebrow">At a Glance</div>
+        <div class="head-row"><h2>Current standings</h2></div>
+        <p class="note">Who leads, whether anyone holds a majority, and the biggest movers since the last election.</p>
+      </div>
+      <div class="standings-grid" id="standingsGrid"></div>
     </div>
-    <div class="standings-grid" id="standingsGrid"></div>
   </div>
 </section>
 
 <section id="lists">
   <div class="wrap">
+    <div class="subsection">
     <div class="section-head">
-      <div class="section-eyebrow">Participants</div>
+      <div class="section-eyebrow">Vote Shares</div>
       <div class="head-row">
         <h2>Electoral lists</h2>
         <div class="row-actions">
@@ -476,7 +395,7 @@
           <span class="copy-note" id="copyNote">Link copied!</span>
         </div>
       </div>
-      <p class="note">These percentages fix the Evropa-wide result of each list. "Prev %" is that list's result at the last election, used to calculate swing. Mark a list as an alliance to add member parties underneath it — the alliance's own result is simply the sum of its members' percentages.</p>
+      <p class="note">Set each list's national vote share. Mark a list as an alliance to add its member parties underneath.</p>
     </div>
 
     <div class="card">
@@ -511,15 +430,17 @@
         <button class="btn primary" id="calcBtn">Calculate</button>
       </div>
     </div>
+    </div>
   </div>
 </section>
 
 <section id="results">
   <div class="wrap">
+    <div class="subsection">
     <div class="section-head">
-      <div class="section-eyebrow">Results</div>
+      <div class="section-eyebrow">Seat Allocation</div>
       <div class="head-row"><h2>Evropean Assembly</h2></div>
-      <p class="note">Seats go only to lists that clear the electoral threshold. Starting with the weakest, a sub-threshold list is eliminated at a time: a share of its votes goes unclaimed (set in Configuration), and the rest splits across every list still standing, weighted by ideological closeness — with a boost for a few documented real-world alliances — repeating until everyone left clears the bar. Seats are then allocated by the method chosen in Configuration. Swing is measured against each list's "Prev %" baseline — for an alliance, that's the combined baseline of its current member parties.</p>
+      <p class="note">Seats go to lists that clear the threshold. Votes from failed lists transfer to the nearest survivors, then seats follow your chosen method.</p>
     </div>
 
     <div class="results-grid">
@@ -562,24 +483,106 @@
         </div>
       </div>
     </div>
+    </div>
+  </div>
+</section>
+
+<section id="compass">
+  <div class="wrap">
+    <div class="subsection">
+    <div class="section-head">
+      <div class="section-eyebrow">Ideology map</div>
+      <div class="head-row"><h2>Political compass</h2></div>
+      <p class="note">Where each party sits on the economic and social axes. Closer parties inherit more of each other's votes.</p>
+    </div>
+    <div class="card">
+      <svg id="compassSvg" viewBox="0 0 640 640" role="img" aria-label="Economic and social position of each current party"></svg>
+    </div>
+    </div>
+  </div>
+</section>
+
+<section id="explainer">
+  <div class="wrap">
+    <div class="subsection">
+    <div class="section-head">
+      <div class="section-eyebrow">Methodology</div>
+      <div class="head-row"><h2>How threshold redistribution works</h2></div>
+      <p class="note">Seven steps, from ideological position to the seats a failed list ultimately loses.</p>
+    </div>
+    <div class="card explainer-steps">
+      <div class="explainer-step">
+        <div class="num">1</div>
+        <div class="body">
+          <h3>Every list has an economic and a social position</h3>
+          <p>The current 8 parties each sit at a specific (economic, social) point on the compass above. Anything without an explicit position falls back to its single left-right spectrum value on both axes.</p>
+        </div>
+      </div>
+      <div class="explainer-step">
+        <div class="num">2</div>
+        <div class="body">
+          <h3>Distance is measured on whichever axis matters more to that list</h3>
+          <p>Plain straight-line distance treats economics and social values equally. Instead, each list's own economic and social "extremity" (how far it sits from the political center) is compared, and the more extreme axis gets weighted <code>3×</code> more heavily for that list specifically. A centrist list keeps both axes weighted equally.</p>
+        </div>
+      </div>
+      <div class="explainer-step">
+        <div class="num">3</div>
+        <div class="body">
+          <h3>Distance decays into a weight</h3>
+          <p>Each potential recipient gets a weight of <code>e^(−steepness × distance)</code>. The steepness slider in Configuration controls how sharply this falls off — higher values concentrate votes almost entirely on the nearest ideological match; lower values spread them more evenly.</p>
+        </div>
+      </div>
+      <div class="explainer-step">
+        <div class="num">4</div>
+        <div class="body">
+          <h3>Known real-world alliances get a bonus</h3>
+          <p>A handful of documented relationships (Evropa Harmony's ties to the Carlist Party, UCP, and ENLM) get their weight doubled on top of the ideological math — enough to tip a close contest, not enough to override a genuine ideological gap.</p>
+        </div>
+      </div>
+      <div class="explainer-step">
+        <div class="num">5</div>
+        <div class="body">
+          <h3>Separatist and centralist lists don't trade votes easily</h3>
+          <p>If a separatist list's votes would otherwise flow to a centralist list (or vice versa), most of that share — 75% by default — is treated as wasted rather than transferred. The remaining 25% still flows to whichever compatible list is next-best, since not every voter in that position would abstain.</p>
+        </div>
+      </div>
+      <div class="explainer-step">
+        <div class="num">6</div>
+        <div class="body">
+          <h3>Some votes are wasted outright</h3>
+          <p>Before any of the above, the Vote wastage slider in Configuration holds back a share of every failed list's votes as abstention — voters who'd rather not transfer to anyone than compromise.</p>
+        </div>
+      </div>
+      <div class="explainer-step">
+        <div class="num">7</div>
+        <div class="body">
+          <h3>The weakest list goes first, one at a time</h3>
+          <p>Rather than every sub-threshold list redistributing at once, the single weakest one is eliminated and fully redistributed first. Then the list is checked again — if anyone (even a list that just received votes) is still below threshold, the new weakest is eliminated next, and so on until everyone left clears the bar.</p>
+        </div>
+      </div>
+    </div>
+    </div>
   </div>
 </section>
 
 <section id="history">
   <div class="wrap">
+    <div class="subsection">
     <div class="section-head">
-      <div class="section-eyebrow">Archive</div>
+      <div class="section-eyebrow">Long-Run Trends</div>
       <div class="head-row"><h2>Election history</h2></div>
-      <p class="note">Each party's vote share across every election on record. Discontinued parties simply stop partway across the chart. Hover a point for its exact result.</p>
+      <p class="note">Vote share by party at every election since 2030. Hover a point for the exact result.</p>
     </div>
     <div class="history-card">
       <svg id="historySvg" viewBox="0 0 760 620" role="img" aria-label="Historical vote share by party"></svg>
     </div>
+    </div>
 
-    <div class="section-head" style="margin-top:40px;">
+    <div class="subsection">
+    <div class="section-head">
       <div class="section-eyebrow">Archive</div>
       <div class="head-row"><h2>Browse a past election</h2></div>
-      <p class="note">Pick an election to see how its Assembly was seated. The First Republic (through 2058) set no electoral threshold; the Second Republic, from 2061 onward, introduced one.</p>
+      <p class="note">Pick an election to see its recorded Assembly. The Second Republic (2061 onward) introduced the electoral threshold.</p>
     </div>
     <div class="election-timeline" id="electionTimeline"></div>
     <div class="results-grid">
@@ -608,62 +611,94 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
 </section>
 
 <section id="glossary">
   <div class="wrap">
+    <div class="subsection">
     <div class="section-head">
-      <div class="section-eyebrow">Reference</div>
+      <div class="section-eyebrow">Directory</div>
       <div class="head-row"><h2>Party glossary</h2></div>
-      <p class="note">Founding dates, ideology, and political position for every party that has appeared in an Evropean election, current or historical.</p>
+      <p class="note">Founding dates, ideology and position for every party that has appeared in an Evropean election.</p>
     </div>
     <div class="results-toolbar">
       <input type="search" id="glossarySearch" placeholder="Search parties…" />
     </div>
     <div class="row-actions" id="glossaryFilters" style="margin-bottom:14px;">
-      <button class="btn small filter-pill active" data-filter="all">All</button>
-      <button class="btn small filter-pill" data-filter="current">Current</button>
+      <button class="btn small filter-pill" data-filter="all">All</button>
+      <button class="btn small filter-pill active" data-filter="current">Current</button>
       <button class="btn small filter-pill" data-filter="alliance">Alliance</button>
       <button class="btn small filter-pill" data-filter="party">Party</button>
       <button class="btn small filter-pill" data-filter="left">Left</button>
       <button class="btn small filter-pill" data-filter="right">Right</button>
     </div>
     <div class="glossary-list" id="glossaryList"></div>
+    </div>
   </div>
 </section>
 
 <section id="lineage">
   <div class="wrap">
+    <div class="subsection">
     <div class="section-head">
-      <div class="section-eyebrow">Reference</div>
+      <div class="section-eyebrow">Ancestry</div>
       <div class="head-row"><h2>Party lineage</h2></div>
-      <p class="note">How today's parties trace back through mergers, splits, and rebrands.</p>
+      <p class="note">How today's parties trace back through mergers, splits and rebrands.</p>
     </div>
     <div id="lineageList"></div>
+    </div>
+  </div>
+</section>
+
+<section id="senate">
+  <div class="wrap">
+    <div class="subsection">
+    <div class="section-head">
+      <div class="section-eyebrow">Upper Chamber</div>
+      <div class="head-row"><h2>Evropean Senate</h2></div>
+      <p class="note">Westminster-style chamber of 21 seats: three senators from each of seven regions.</p>
+    </div>
+    <div class="results-grid">
+      <div class="hemi-card">
+        <svg id="senateSvg" viewBox="0 0 760 420" role="img" aria-label="Westminster-style seating of the Evropean Senate"></svg>
+        <div class="majority-note">Majority line at 11 of 21 seats</div>
+        <div class="seat-share-bar" id="senateSeatShareBar"></div>
+        <div class="seat-share-axis" id="senateSeatShareAxis"></div>
+        <div class="legend" id="senateLegend"></div>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Party</th><th class="num">Result %</th><th class="num">Seats</th></tr></thead>
+          <tbody id="senateResultsBody"></tbody>
+        </table>
+      </div>
+    </div>
+    </div>
   </div>
 </section>
 
 <section id="regions">
   <div class="wrap">
+    <div class="subsection">
     <div class="section-head">
-      <div class="section-eyebrow">Structure</div>
+      <div class="section-eyebrow">Devolution</div>
       <div class="head-row"><h2>Regional breakdown</h2></div>
-      <p class="note">The number and shape of Evropa's regions is still being settled separately from the seat formula itself.</p>
+      <p class="note">Recorded results for the five regional assemblies with documented data.</p>
     </div>
-    <div class="stub">
-      <div class="glyphs"><span></span><span></span><span></span><span></span></div>
-      <p>Regional and Senate results aren't modelled in this simulator, which currently covers the 720-seat Evropean Assembly only.</p>
+    <div class="glossary-list" id="regionsList"></div>
     </div>
   </div>
 </section>
 
 <section id="config" class="last">
   <div class="wrap">
+    <div class="subsection">
     <div class="section-head">
-      <div class="section-eyebrow">Settings</div>
+      <div class="section-eyebrow">Controls</div>
       <div class="head-row"><h2>Configuration</h2></div>
-      <p class="note">Changes here recalculate the simulation immediately.</p>
+      <p class="note">Threshold, allocation method and redistribution settings. Changes recalculate instantly.</p>
     </div>
     <div class="card config-grid">
       <div class="field">
@@ -695,6 +730,7 @@
         <input type="range" id="voteWastage" value="15" min="0" max="50" step="1" />
         <span class="help">Share of a failed list's votes that simply go unclaimed rather than transferring to another party — protest voters who'd rather abstain than pick a second choice.</span>
       </div>
+    </div>
     </div>
   </div>
 </section>
@@ -742,14 +778,15 @@
       voteWastage: 15,
       coalition: [],
       lists: [
-        { id: uid(), name: "Communist Coordination Committee of Socialist Parties", abbr: "CCCSP", color: "#f12315", type: "party", percent: 0.8, previousPercent: 0, members: [] },
-        { id: uid(), name: "Arise!", abbr: "Arise!", color: "#fa4d40", type: "party", percent: 30.5, previousPercent: 26.0, members: [] },
-        { id: uid(), name: "Carlist Party", abbr: "PC", color: "#f59714", type: "party", percent: 3.3, previousPercent: 3.05, members: [] },
-        { id: uid(), name: "Social Progressive Cooperation", abbr: "SPC", color: "#7f9c7a", type: "party", percent: 18.5, previousPercent: 15.0, members: [] },
-        { id: uid(), name: "Free Citizens' Party", abbr: "FCP", color: "#feb700", type: "party", percent: 1.0, previousPercent: 0, members: [] },
-        { id: uid(), name: "Evropa Harmony", abbr: "EvH", color: "#011e57", type: "party", percent: 20.2, previousPercent: 24.4, members: [] },
-        { id: uid(), name: "Neo-Libertarian Movement", abbr: "ENLM", color: "#027c4d", type: "party", percent: 10.1, previousPercent: 16.9, members: [] },
-        { id: uid(), name: "Evropa for Evropeans Party", abbr: "EfEP", color: "#000000", type: "party", percent: 15.6, previousPercent: 13.0, members: [] }
+        { id: uid(), name: "Communist Coordination Committee of Socialist Parties", abbr: "CCCSP", color: "#FF0000", type: "party", percent: 0.8, previousPercent: 1.6, members: [] },
+        { id: uid(), name: "Arise!", abbr: "Arise!", color: "#fa4d40", type: "party", percent: 29.5, previousPercent: 30.7, members: [] },
+        { id: uid(), name: "Carlist Party", abbr: "PC", color: "#f59714", type: "party", percent: 3.3, previousPercent: 4.9, members: [] },
+        { id: uid(), name: "United Civic Platform", abbr: "UCP", color: "#920064", type: "party", percent: 17.5, previousPercent: 15.2, members: [] },
+        { id: uid(), name: "Evropean Renewal", abbr: "REN", color: "#822194", type: "party", percent: 3.0, previousPercent: 0, members: [] },
+        { id: uid(), name: "Free Citizens' Party", abbr: "FCP", color: "#feb700", type: "party", percent: 1.0, previousPercent: 3.6, members: [] },
+        { id: uid(), name: "Evropa Harmony", abbr: "EvH", color: "#011e57", type: "party", percent: 19.2, previousPercent: 18.2, members: [] },
+        { id: uid(), name: "Neo-Libertarian Movement", abbr: "ENLM", color: "#027c4d", type: "party", percent: 10.1, previousPercent: 6.2, members: [] },
+        { id: uid(), name: "Evropa for Evropeans Party", abbr: "EfEP", color: "#000000", type: "party", percent: 15.6, previousPercent: 19.6, members: [] }
       ]
     };
   }
@@ -761,12 +798,13 @@
   var partyEconSocial = {
     "Arise!": { econ: 3,   social: 3   },
     "EvH":    { econ: 5.5, social: 7   },
-    "SPC":    { econ: 4,   social: 1   },
+    "UCP":    { econ: 4,   social: 1   },
     "ENLM":   { econ: 9.2, social: 4   },
     "EfEP":   { econ: 5,   social: 8   },
     "PC":     { econ: 2.8, social: 4.2 },
     "FCP":    { econ: 6,   social: 2   },
-    "CCCSP":  { econ: 0.3, social: 0.5 }
+    "CCCSP":  { econ: 0.3, social: 0.5 },
+    "REN":    { econ: 4,   social: 4   }
   };
   function econOf(abbr){ return partyEconSocial[abbr] ? partyEconSocial[abbr].econ : spectrumOf(abbr); }
   function socialOf(abbr){ return partyEconSocial[abbr] ? partyEconSocial[abbr].social : spectrumOf(abbr); }
@@ -801,8 +839,8 @@
     "CCCSP": 1, "CWPE": 1, "CSAE": 1.5, "SAE": 1.5, "DSA": 1.5,
     "RSA": 1.5, "NASC": 1.5,
     "SDP": 3.5, "ROSE": 2.5, "GRASP": 3, "SOLAR": 2, "Greens": 2.5, "GA": 2.5, "GD": 2.5, "Delta": 2, "Astra": 2.5,
-    "Arise!": 3, "PC": 3.5, "SPC": 3.5, "PEC": 4, "ER": 2.5, "RLP": 2.5, "EUP": 3.5,
-    "GFP": 5, "RES": 5, "M30": 5, "BSP": 5, "Mason": 5,
+    "Arise!": 3, "PC": 3.5, "UCP": 3.5, "PEC": 4, "ER": 2.5, "RLP": 2.5, "EUP": 3.5,
+    "GFP": 5, "RES": 5, "M30": 5, "BSP": 5, "Mason": 5, "REN": 4.5,
     "ECU": 6, "CLPB": 6.5, "Renewal": 6, "PIP": 5.5, "FEP": 5.5,
     "ELC": 6.5, "LFDU": 6.5, "CORE": 6, "FCP": 6, "DU": 6.5, "FTU": 6.5,
     "PFD": 7, "PAX": 6.5, "PAUR": 7, "GDP": 7, "PLJ": 7, "PiS": 7,
@@ -816,46 +854,49 @@
   var historicalAllianceAbbrs = { "GRASP":1, "ECU":1, "SOLAR":1, "EMSP":1, "PAUR":1, "LFDU":1, "CORE":1, "ROSE":1, "CAFE":1 };
 
   var partyGlossary = [
-    { type: "party", abbr: "PEC", name: "Progressive European Coalition", founded: "2029", ideology: "Eco-progressivism, Republicanism, Civic nationalism, Mixed unitary-federal model, Innovation", position: "Centre to centre-left" },
-    { type: "both", abbr: "GRASP", name: "Green-Red Alliance for Society and Progress", founded: "24 January 2035", ideology: "Democratic socialism, Green, Progressivism, Pro-Evropeanism", position: "Left to centre-left", notes: "Originally founded as an electoral alliance in 2030; reorganized into a unified standalone party in 2035." },
-    { type: "party", abbr: "PFD", name: "Party for Freedom & Democracy", founded: "2029", ideology: "Conservatism, Nationalism", position: "Economically centre-left to centre-right; socially right-wing" },
-    { type: "party", abbr: "CLPB", name: "Conservative Liberals", founded: "2030", ideology: "Liberal conservatism, Classical Liberalism, Neo-Liberalism, Direct Democracy", position: "Centre-right" },
+    { type: "party", abbr: "PEC", name: "Progressive European Coalition", founded: "2029", ideology: "Centrism, Eco-progressivism, Innovation, Social market reform, Pro-Evropeanism", position: "Centre to centre-left", notes: "Stands for a future-focused, socially just Evropa governed by pragmatic reforms that empower individuals and modernise institutions, combining ecological and technological responsibility with a strong social foundation and a firm belief in democratic innovation and European unity." },
+    { type: "both", abbr: "GRASP", name: "Green-Red Alliance for Society and Progress", founded: "24 January 2035", ideology: "Democratic socialism, Green, Progressivism, Pro-Evropeanism", position: "Left to centre-left", notes: "Originally founded as an electoral alliance in 2030; reorganized into a unified standalone party in 2035. Strongly socially progressive and pro-LGBTQ+, supporting workers' and youth rights, environmentalism and renewable energy, a cooperative economy with key sectors publicly owned, expanded direct democracy, and free healthcare and education for all." },
+    { type: "party", abbr: "EMSP", name: "Evropa Made Socialist Party", founded: "—", ideology: "Socialism, Progressivism, Pro-Evropean unity", position: "Left to far-left", notes: "A GRASP-affiliated member party. Advocates a unitary Evropean state to safeguard human and workers' rights, strong social welfare and economic redistribution, and progressive social policy including LGBTQ+ rights, universal healthcare and expanded workers' protections. Prefers a republican democracy while ultimately aiming for a transition beyond traditional democratic governance." },
+    { type: "party", abbr: "PFD", name: "Party for Freedom & Democracy", founded: "2029", ideology: "Conservatism, Nationalism", position: "Economically centre-left to centre-right; socially right-wing", notes: "Inspired by Poland's PiS, focused on national sovereignty and conservative values with economically flexible policy balancing welfare and pro-business regulation. Neutral on monarchy versus republic, favouring pragmatic governance, and advocates law-and-order policy emphasising security and tradition." },
+    { type: "party", abbr: "CLPB", name: "Conservative Liberals", founded: "2030", ideology: "Liberal conservatism, Fiscal responsibility, Civil rights, Technology investment, Social conservatism", position: "Centre-right", notes: "Prioritises balanced budgets and efficient public spending, strongly supports civil rights and freedoms, and seeks strategic investment in technology industries as key to economic growth, balancing economic liberalism with conservative social values." },
     { type: "party", abbr: "VCU", name: "VCU", founded: "2030", ideology: "Christian democracy, Constitutional monarchism, Federalism", position: "Centre-right to right-wing" },
     { type: "party", abbr: "EUP", name: "EUP", founded: "2030", ideology: "Social liberalism, Evropean nationalism", position: "Centre-left" },
     { type: "alliance", abbr: "ECU", name: "European Centre Union", founded: "30 June 2031", ideology: "Liberal conservatism, Liberalism", position: "Centre to centre-right" },
-    { type: "party", abbr: "ER", name: "Evropean Rebirth", founded: "31 December 2031", ideology: "State interventionism, Labourism, Militarism, Republican institutionalism, Sovereigntism, Social progressivism, Secularism, Left-wing nationalism, Economic nationalism, Left-wing populism, Centralism", position: "Centre-left to left-wing (formally declared left-wing in 2061)" },
-    { type: "party", abbr: "EMM", name: "European Monarchist Movement", founded: "28 May 2031", ideology: "Monarchism, Patriotism, Traditionalism", position: "Right-wing" },
+    { type: "party", abbr: "ER", name: "Evropean Rebirth", founded: "31 December 2031", ideology: "State interventionism, Labourism, Militarism, Republican institutionalism, Sovereigntism, Pro-LGBTQ+ rights, Secularism, Left-wing nationalism, Economic nationalism, Left-wing populism, Centralism", position: "Centre-left to left-wing (formally declared left-wing in 2061)", notes: "Advocated a united, independent Evropa integrating all European peoples while opposing foreign influence; immigrant-sceptic but staunchly pro-queer-rights. Supported a union socialist mixed economy and nuclear-powered energy independence, with military training for all citizens and strong direct/e-democracy. Leader: Élise Valente." },
+    { type: "party", abbr: "EMM", name: "European Monarchist Movement", founded: "28 May 2031", ideology: "Monarchism, Patriotism, Free trade, Traditionalism", position: "Right-wing", notes: "Aims to form a Evropean Empire uniting all Royal Houses of Europe. Socially conservative and traditionalist on family issues, with focus on family, economy and border security, inspired by Germany's AfD and CDU and Austria's ÖVP and FPÖ." },
     { type: "alliance", abbr: "SOLAR", name: "SOLAR", founded: "21 January 2034", ideology: "Democratic socialism, Progressivism, Green politics", position: "Centre-left to far-left" },
     { type: "party", abbr: "PAX", name: "Pax Evropa", founded: "2034", ideology: "Conservatism, Nationalism", position: "Economically centre-left to centre-right; socially right-wing" },
     { type: "alliance", abbr: "LFDU", name: "Liberal Federalist Democratic Union", founded: "21 February 2034", ideology: "Liberal conservatism, Federalism", position: "Centre-right" },
     { type: "party", abbr: "SDP", name: "Social Democratic Party", founded: "7 March 2034", ideology: "Functional socialism, Swedish-modelism, Labourism, Anti-extremism", position: "Centre-left" },
-    { type: "party", abbr: "ENLM", name: "Neo-Libertarian Movement", founded: "1 December 2033", ideology: "Libertarianism, Anti-monarchism, Individualism, Unitarianism, Civil libertarianism, Populism, Anti-establishment, Progressivism", position: "Right-wing" },
+    { type: "party", abbr: "ENLM", name: "Neo-Libertarian Movement", founded: "1 December 2033", ideology: "Economically right-wing, Libertarianism, Anti-monarchism, Individualism, Unitarianism, Civil libertarianism, Populism, Anti-establishment, Socially progressive", position: "Economically right-wing, socially progressive", notes: "Owned by The Gold Standard. Advocates low taxation, fiscal responsibility and privatisation against what it sees as overregulated, bureaucracy-choked markets. Uncompromisingly pro-democratic against monarchy, authoritarianism and dictatorship, campaigning for individual rights, civil liberties and personal privacy, with particular focus on free speech and gun ownership. Supports a devolved unitary state, abolishing the regions in favour of robust local autonomy alongside a powerful national government. Leader: Stefan Evers." },
     { type: "party", abbr: "PIP", name: "Progress & Innovation Party", founded: "28 May 2034", ideology: "Centrism, Technocracy, Christian democracy", position: "Centre to centre-right" },
     { type: "party", abbr: "DSA", name: "Democratic Syndicalist Alliance", founded: "20 December 2033", ideology: "Socialism, Syndicalism, Progressivism, Militant socialism", position: "Left to far-left" },
-    { type: "both", abbr: "ELC", name: "Liberals & Conservatives", founded: "4 June 2038", ideology: "Ordoliberalism, Christian democracy, Liberal conservatism", position: "Centre-right", notes: "Began as a 2035 electoral alliance between CLPB and PFD; later consolidated into a lasting standalone party." },
-    { type: "party", abbr: "RSA", name: "Reformed Socialist Alternative", founded: "27 July 2036", ideology: "Libertarian socialism, Scientific socialism, Post-neoliberalism, Communitarianism, Democratic socialism", position: "Left-wing to far-left" },
-    { type: "party", abbr: "M30", name: "Movement 2030", founded: "—", ideology: "Centrism, Moderate progressivism, Universal solidarism, Pro-Westernism, Balanced governance", position: "Centrist" },
-    { type: "party", abbr: "EvH", name: "Evropa Harmony", founded: "2 December 2038 (merged with AMIN, 20 July 2066)", ideology: "Conservatism, Constitutional monarchism, Internationalism, Agrarianism, Theism", position: "Centre to right-wing", notes: "The Carlist Party (PC) later split off from EvH as an independent branch." },
-    { type: "party", abbr: "RLP", name: "Radicalist Labour Party", founded: "27 May 2040 (dissolved 21 July 2056)", ideology: "Labourism, Social democracy, Democratic socialism, Eco-socialism, Progressivism, Expansionism, Green politics, World federalism", position: "Centre-left to left-wing" , notes: "Formed from a merger with RSA; its base later regrouped into the Social Progressive Cooperation (SPC)."},
+    { type: "both", abbr: "ELC", name: "Liberals & Conservatives", founded: "4 June 2038", ideology: "Ordoliberalism, Christian democracy, Liberal conservatism", position: "Centre-right", notes: "Began as a 2035 electoral alliance between CLPB and PFD; later consolidated into a lasting standalone party. The largest party right of centre, combining free markets with reasonable state intervention, a federation of strong regions guaranteeing national security and civil rights, and a vision of Evropa as a global example of deliberative democracy and social cohesion." },
+    { type: "party", abbr: "RSA", name: "Reformed Socialist Alternative", founded: "27 July 2036", ideology: "Post-neoliberalism, Libertarian socialism, Communitarianism, Scientific socialism", position: "Left-wing to far-left", notes: "Envisions a post-capitalist economy built on democratic councils, unions and cooperatives, rejecting both profit-driven markets and rigid centralism, inspired by the Swedish model of sectoral bargaining. Seeks to decommodify housing, healthcare, education and transport as universal rights; anti-authoritarian and anti-imperialist." },
+    { type: "party", abbr: "M30", name: "Movement 2030", founded: "—", ideology: "Centrism, Humanism, Anti-corruption, Regionalism, Environmentalism, Pro-Westernism", position: "Centrist", notes: "Focuses on the concrete needs of citizens independent of ideology, defending farmers, craftsmen and local cultural identities while balancing rural and urban areas. Opposes monarchy, supports strong Western alliances and a tough stance on China, and seeks effective governance positioned between federalism and centralism." },
+    { type: "party", abbr: "EvH", name: "Evropa Harmony", founded: "2 December 2038 (merged with AMIN, 20 July 2066)", ideology: "Big tent (centre to right-wing), Conservatism, Constitutional monarchism, Internationalism, Agrarianism, Theism", position: "Centre to right-wing", notes: "A big-tent conservative people's party uniting social-Christians and moderate conservatives around harmonising the European continent, fostering strong communities around churches, unions and schools, and upholding constitutional legitimacy through regional monarchies. Supports agrarianism and limited economic intervention, rejecting both socialist redistribution and unregulated capitalism. Seeks enlargement of the union across the continent and the Mediterranean. The Carlist Party (PC) later split off as an independent branch. Leader: Elina Kallas." },
+    { type: "party", abbr: "RLP", name: "Radicalist Labour Party", founded: "27 May 2040 (dissolved 21 July 2056)", ideology: "Labourism, Social democracy, Democratic socialism, Eco-socialism, Progressivism, Expansionism, Green politics, World federalism", position: "Centre-left to left-wing" , notes: "Formed from a merger with RSA; its base later regrouped into the United Civic Platform (UCP, formerly SPC). Championed a strong welfare state, public ownership of key industries and progressive taxation, combining social democracy with cooperative ownership, state-led investment and a rapid green transition. Prioritised worker-led bargaining between unions and corporations."},
     { type: "party", abbr: "FTU", name: "Federal Technocratic Union", founded: "1 May 2042 (dissolved 28 April 2049)", ideology: "Technocracy, Federalism, Social conservatism, Executive-led governance, Presidentialism, Pro-natalism", position: "Centre to right-wing" },
     { type: "party", abbr: "NASC", name: "Non-Aligned Socialists", founded: "27 April 2043 (dissolved 28 March 2062)", ideology: "Democratic socialism, Left-libertarianism, Communitarianism, Left-wing technocracy, Communal democracy, Non-alignment, Third-worldism, Council democracy, Cooperative federalism", position: "Left-wing to far-left" , notes: "Its successor movement later helped form Astra."},
-    { type: "party", abbr: "CWPE", name: "Communist Workers Party", founded: "8 September 2043 (dissolved 2057)", ideology: "Communism, Orthodox Marxism, Anti-fascism, Internationalism", position: "Far-left" },
-    { type: "party", abbr: "EfEP", name: "Evropa for Evropeans Party", founded: "22 February 2043", ideology: "Anti-immigration, Anti-renewalism, Anti-corruption, Republicanism, Sovereignism, Evropean nationalism, Expansionism, State-led capitalism", position: "Far-right" },
-    { type: "party", abbr: "DU", name: "Democratic Union", founded: "2049 (dissolved 2061)", ideology: "Pragmatism, Federalism, Ordoliberalism/liberal conservatism, Social conservatism, Anti-populism, Executive-led governance, Pro-natalism", position: "Centre to right-wing" },
-    { type: "party", abbr: "RES", name: "Restore Europe", founded: "20 July 2049", ideology: "Sovereignism, Confederalism, Pirate politics, Welfare capitalism", position: "Centre" },
+    { type: "party", abbr: "CWPE", name: "Communist Workers Party", founded: "8 September 2043 (dissolved 2057)", ideology: "Communism, Orthodox Marxism, Anti-fascism, Internationalism", position: "Far-left", notes: "Advocated seizure of the means of production by the working class and abolition of capitalism and private property, opposing both federalism and centralism as bourgeois plots. Officially banned by the Supreme Court." },
+    { type: "party", abbr: "EfEP", name: "Evropa for Evropeans Party", founded: "22 February 2043", ideology: "Big tent (far-left to far-right), Evronationalism, Expansionism, State-led capitalism, Anti-corruption, Protectionism, Anti-immigration", position: "Officially a 'big tent' spanning far-left to far-right; substantively far-right", notes: "Seeks to unite the European continent under Evropeanism as a shared national identity, with a powerful presidential executive under centralised government and a free-market economy. Pursues an independent, self-sufficient Evropa able to withstand foreign threats, fighting internal corruption while opposing immigration and favouring social and cultural conservatism. Chairman: Anton Brouwer." },
+    { type: "party", abbr: "REN", name: "Evropean Renewal", founded: "—", ideology: "Syncretic, World federalism, Renewalism, Unitarism, Democratic, Legalist", position: "Centrist, cross-ideological", notes: "Argues liberal democracy alone struggles with problems that outlast a single election, and that greater unity among the world's democracies is the answer — built entirely through consent: institutions people can vote to leave, treaties ratified by referendum, vetoes any supermajority can overturn. Uncompromisingly legalist, pursuing its programme only through legitimate constitutional means, while supporting a strong unitarist state nationally. Led by Élise Valente." },
+    { type: "party", abbr: "DU", name: "Democratic Union", founded: "2049 (dissolved 2061)", ideology: "Liberal conservatism, Ordoliberalism, Anti-populism, Federalism, Pro-natalism", position: "Centre to right-wing", notes: "Formerly the Federal Technocratic Union; a big-tent alliance of right-leaning federalists rejecting populist fervour in favour of political stability and refinement of democracy. Advocated widened executive-order power alongside subsidiarity and further decentralisation to regions, plus pro-natalist policy and reduced welfare spending. Chancellor: Matteo Moravietti." },
+    { type: "party", abbr: "RES", name: "Restore Europe", founded: "20 July 2049", ideology: "Confederalism, Democratic sovereignty, Welfare capitalism, Pirate politics", position: "Centre", notes: "Advocated transforming Evropa into a confederal union grounded in democratic sovereignty, restoring primary political authority to sovereign member states through autonomy, direct democracy and local self-rule, alongside civil liberties and institutional transparency." },
     { type: "party", abbr: "GFP", name: "Green Federation Party", founded: "9 October 2049 (dissolved 24 November 2053)", ideology: "Centrist green politics, Technocracy", position: "Centre" },
     { type: "alliance", abbr: "CAFE", name: "CAFE (alliance of EvH + DU)", founded: "29 June 2052 (dissolved 30 April 2056)", ideology: "Federalism, Christian democracy, Christian conservatism, Liberal conservatism, Ordoliberalism, Anti-populism, Constitutional monarchism", position: "Centre-right to right-wing" , notes: "An alliance of Evropa Harmony (EvH) and the Democratic Union (DU)."},
-    { type: "party", abbr: "ReDe", name: "Regnum", founded: "2049 (dissolved 2061)", ideology: "Catholic theocracy, Distributism, Third Position, Localism, Evronationalism", position: "Centre-right to right-wing" },
-    { type: "alliance", abbr: "ROSE", name: "ROSE (alliance)", founded: "4 February 2053 (dissolved 15 August 2060)", ideology: "Democratic socialism, Labourism, Communitarianism, Left-libertarianism, Social democracy, Eco-socialism, Ultra-progressivism, Green politics, Left-wing technocracy", position: "Centre-left to far-left" , notes: "An electoral alliance; its base was later absorbed into the Social Progressive Cooperation (SPC)."},
-    { type: "party", abbr: "AMIN", name: "AMIN", founded: "21 February 2056", ideology: "Theism, Conservatism, Predistributive right economics, Pacifism, Euro-Mediterraneanism, Agrarianism", position: "Centre-right to right-wing" },
+    { type: "party", abbr: "ReDe", name: "Regnum", founded: "2049 (dissolved 2061)", ideology: "Catholic theocracy, Distributism, Third Position, Localism, Evronationalism", position: "Centre-right to right-wing", notes: "Sought to instate the Pope as Head of State, advocating distributism based on Catholic social teaching and redrawing Evropa's internal borders to make regions more genuinely local. Socially conservative but preached tolerance and forgiveness as core Christian values. Leader: Willem M. Thijssen." },
+    { type: "alliance", abbr: "ROSE", name: "ROSE (alliance)", founded: "4 February 2053 (dissolved 15 August 2060)", ideology: "Democratic socialism, Labourism, Communitarianism, Left-libertarianism, Social democracy, Eco-socialism, Ultra-progressivism, Green politics, Left-wing technocracy", position: "Centre-left to far-left" , notes: "An electoral alliance; its base was later absorbed into the United Civic Platform (UCP, formerly SPC)."},
+    { type: "party", abbr: "AMIN", name: "AMIN", founded: "21 February 2056", ideology: "Theism, Conservatism, Predistributive right economics, Pacifism, Euro-Mediterraneanism, Agrarianism", position: "Centre-right to right-wing", notes: "An alliance of personality-cult regional parties focused on theist conservative policy, advocating decentralisation and abolition of the secular state in favour of pluralist spiritual traditions. Supports a labourist predistributive economy blended with pro-market policy, and seeks long-term abolition of the military. Leader title: Sage (Ariminum)." },
     { type: "alliance", abbr: "CORE", name: "CORE (alliance of ER + EfEP)", founded: "7 October 2060", ideology: "State capitalism, Economic nationalism, Evronationalism, Centralism, Militarism, Sovereigntism", position: "Syncretic nationalism" , notes: "An alliance of Evropean Rebirth (ER) and the Evropa for Evropeans Party (EfEP), blending their otherwise opposed positions into one syncretic-nationalist bloc."},
-    { type: "party", abbr: "Delta", name: "Δ (Delta)", founded: "10 July 2058 (dissolved 22 July 2063, merged into Astra)", ideology: "Democratic socialism, Social democracy, Unitarianism, Materialism, Direct democracy, Presidentialism, Left-wing populism", position: "Left-wing" , notes: "Merged into Astra (Per Aspera ad Astra) in 2063."},
-    { type: "party", abbr: "Astra", name: "Per Aspera ad Astra", founded: "22 July 2063 (merger of Delta and SLP)", ideology: "Democratic socialism, Co-operative centralism, Left-wing populism, Materialism, Progressivism", position: "Left-wing" , notes: "Formed from the merger of Delta and the Socialist Popular Rally successor to NASC."},
-    { type: "party", abbr: "SPC", name: "Social Progressive Cooperation", founded: "21 July 2056", ideology: "Social democracy, Ultra progressivism, Green politics, Technocracy", position: "Centre-left" },
-    { type: "party", abbr: "Arise!", name: "Arise!", founded: "25 December 2068 (merger of Astra and Evropean Rebirth)", ideology: "Democratic socialism, Populism, Evronationalism, Unitarism, Labourism, Progressivism", position: "Left-wing", notes: "Formed from the merger of Astra and Evropean Rebirth; its branches include the Socialist Popular Rally and PA-KD." },
-    { type: "party", abbr: "PC", name: "Carlist Party", founded: "Roughly three decades of continuous activity, by its own leadership's account", ideology: "Christian-inspired socialism, Cooperative economics, Communitarianism, Regional autonomism, Cultural traditionalism, Ceremonial monarchism, Industrial and export development", position: "Centre-left", notes: "Now fully independent of Evropa Harmony (EvH), after previously running as its Iberian sister party. Long dominant in Iberian regional politics — its leader, Villa Jr, has served as Premier/Steward of Iberia, overseeing an 'Iberian Decade' legislative programme (the POWER, SPARK, SIGNATURE, and EXPORT+ Acts) covering energy infrastructure, research commercialisation, origin/quality branding, and export capacity. Maintains autonomous regional branches, including the PNCC (Catalonia), PCR (Portugal), and RSMC (Sardinia), and has taken part in broader alliances such as PEOPLES and the League of Mediterranea." },
-    { type: "party", abbr: "FCP", name: "Free Citizens' Party", founded: "2068", ideology: "Anti-corruption, Anti-nepotism, Pirate politics, Environmentalism, Moderate economics, Direct democracy, Provincialism", position: "Centre-right", notes: "New party contesting for the first time in the current Assembly." },
-    { type: "party", abbr: "CCCSP", name: "Communist Coordination Committee of Socialist Parties", founded: "2068", ideology: "Revolutionary communism, Revolutionary socialism", position: "Far-left", notes: "New party contesting for the first time in the current Assembly." }
+    { type: "party", abbr: "Delta", name: "Δ (Delta)", founded: "10 July 2058 (dissolved 22 July 2063, merged into Astra)", ideology: "Economic materialism, State interventionism, Presidentialism, Direct democracy, Unitarism", position: "Left-wing" , notes: "Merged into Astra (Per Aspera ad Astra) in 2063. Founded on the belief that Evropa's system could no longer deliver meaningful change, advocating a strongly interventionist economy focused on full employment and state-led development alongside a presidential system and strong direct democracy. Leader: Coletas."},
+    { type: "party", abbr: "Astra", name: "Per Aspera ad Astra", founded: "22 July 2063 (merger of Delta and SLP)", ideology: "Democratic socialism, Co-operative centralism, Left-wing populism, Materialism, Pro-workers", position: "Left-wing" , notes: "Formed from the merger of Delta and the Socialist Popular Rally successor to NASC. A populist socialist movement emphasising material change — higher minimum wage, workers' rights, workplace democracy and empowered unions — and a centralised unitary state intervening in the economy. Chairpersons: Alice G. Aureli and Katja Pekkala."},
+    { type: "party", abbr: "SLP", name: "Socialist Labour Party", founded: "— (dissolved 2063, merged into Astra)", ideology: "Democratic socialism, Communal democracy, Pacifism, Federalism", position: "Centre-left to left-wing", notes: "Envisioned an Evropa built on worker participation, social ownership in key sectors, fair market regulation, green innovation and universal welfare, combining expert planning with local autonomy through cooperative federalism and a return to a parliamentary republic. Followed a pacifist international doctrine, the 'Entente de la Pax'. Secretary-General: Michele Liberi." },
+    { type: "party", abbr: "UCP", name: "United Civic Platform", founded: "21 July 2056", ideology: "Nordic social democracy, Progressivism, World federalism", position: "Centre-left", notes: "The successor of the Social Progressive Cooperation. Believes in strong cooperation and conciliation between the public and private sectors, defending a regulated market and positive competition while striving for social justice, with economic growth as a major focus for the Union. Strongly progressive on the social axis, defending human rights, self-determination and social autonomy, and expanding the rights of social minorities and the marginalised so they are integrated and included in all spheres of Evropean society. President: Koume Akaboshi." },
+    { type: "party", abbr: "Arise!", name: "Arise!", founded: "25 December 2068 (merger of Astra and Evropean Rebirth)", ideology: "Left-wing, Democratic socialism, Populism, Evronationalism, Unitarism, Labourism, Progressivism", position: "Left-wing", notes: "Formed from the merger of Astra and Evropean Rebirth; its branches include the Socialist Popular Rally and PA-KD. Supports workers' rights, economic equality, workplace self-governance and stronger unions, alongside a strong Evropean military and protectionist trade policy to build industrial self-sufficiency. Localist and unitarian on governance with minor federalist factions, and supportive of direct democracy. Leader: Yotam Churchill-Valente." },
+    { type: "party", abbr: "PC", name: "Carlist Party", founded: "Roughly three decades of continuous activity, by its own leadership's account", ideology: "Carlism, Catholic social justice, Communitarianism, Confederalism, Foralism, Self-management socialism, Plurinational Iberianism, Self-determination", position: "Centre-left", notes: "An independent Iberian movement rooted in the historic defence of communities, regional liberties and social justice, combining Catholic social teaching with support for welfare, worker and cooperative ownership. Advocates a plurinational, confederal Iberia built upward from its peoples and municipalities, defending fueros and extensive self-government, and supports a ceremonial, non-partisan head of state. Now fully independent of Evropa Harmony (EvH). Long dominant in Iberian regional politics — Villa Jr has served as Premier/Steward of Iberia overseeing the 'Iberian Decade' legislative programme (the POWER, SPARK, SIGNATURE, and EXPORT+ Acts). Maintains autonomous regional branches (PNCC, PCR, RSMC) and has taken part in alliances such as PEOPLES and the League of Mediterranea. Leader: Bilal." },
+    { type: "party", abbr: "FCP", name: "Free Citizens' Party", founded: "2068", ideology: "Anti-corruption, Anti-nepotism, Pirate politics, Environmentalism, Moderate economics, Direct democracy, Provincialism", position: "Centre-right", notes: "Founded in response to the rise of political dynasties in Evropean politics, blending pirate politics with progressive liberal economics. Advocates direct democracy, reduced presidential power and increased privacy, favouring small and medium business over monopolies with stronger consumer protections. Leader: Theo." },
+    { type: "party", abbr: "CCCSP", name: "Communist Coordination Committee of Socialist Parties", founded: "2068", ideology: "Revolutionary communism, Revolutionary socialism", position: "Far-left", notes: "A revolutionary movement uniting communists, socialists, anti-capitalists, feminists, environmentalists and anti-imperialists toward overthrowing the capitalist world and building a new Evropean union. Operates on democratic centralism, pursuing tactical participation in institutions while building structures to abolish them. Condemns Western embargoes and supports proletarian internationalism. Leader: Chairman Chris." }
   ];
 
   // Shared ordering rule for every seat diagram: alliances always sit left of standalone parties;
@@ -867,10 +908,10 @@
     return aAbbr.localeCompare(bAbbr);
   }
 
-  // Logos live in the logos/ folder alongside this file. Add more entries as they arrive.
+  // Known party colours (used wherever a list has no colour of its own).
   var knownPartyColors = {
-    "EvH": "#011e57", "SPC": "#7f9c7a", "ENLM": "#027c4d", "EfEP": "#000000",
-    "Arise!": "#fa4d40", "FCP": "#feb700", "CCCSP": "#f12315",
+    "EvH": "#011e57", "UCP": "#920064", "SPC": "#7f9c7a", "ENLM": "#027c4d", "EfEP": "#000000",
+    "Arise!": "#fa4d40", "FCP": "#feb700", "CCCSP": "#FF0000",
     "CORE": "#450033", "ER": "#f9a3f9", "CWPE": "#d70000", "RSA": "#ff0000",
     "NASC": "#f5e0bc", "Delta": "#980f15", "Astra": "#cc0340", "GRASP": "#bb2268",
     "RLP": "#8d0000", "RES": "#81dbd2", "CAFE": "#45274c", "DU": "#23354e",
@@ -880,7 +921,15 @@
     "VCU": "#153953", "EUP": "#660032", "EMM": "#003399", "BSP": "#16181f",
     "ECU": "#39c93f", "PAX": "#7a1626", "SOLAR": "#f2871e", "DSA": "#cf9b2e",
     "SDP": "#e0201a", "PIP": "#2f7fe0", "M30": "#2b3a55", "EMSP": "#d6336c",
-    "LFDU": "#2f9e79"
+    "LFDU": "#2f9e79",
+    // Regional alliances
+    "VCA": "#30355A", "LT": "#F36C21", "FDD": "#01935A",
+    "REN": "#822194",
+    "PEOPLES": "#CE2A29", "ARI": "#011E57", "PUI": "#006600",
+    "SPR": "#9E0A0A", "F!": "#61C4FD", "NTP": "#D8DBE0",
+    "GUARDIAN": "#DAA520",
+    "SPB": "#A10000", "UFD": "#FECE10", "SSW": "#003C8F", "FNP": "#21366B", "THP": "#011E57",
+    "DDU": "#DE1039", "P64": "#164A74", "POR": "#EAB749", "NHP": "#303030"
   };
   function colorForAbbr(abbr){
     if(knownPartyColors[abbr]) return knownPartyColors[abbr];
@@ -943,11 +992,13 @@
     { year: 2058, seats: 720, majority: 361, turnout: 65, republic: 1,
       results: [ ["ROSE",145,20.1], ["ER",131,18.2], ["EvH",121,16.8], ["ENLM",95,13.2], ["RES",47,6.5], ["Delta",44,6.1], ["AMIN",43,6.0], ["EfEP",38,5.3], ["DU",29,4.0] ] },
     { year: 2061, seats: 720, majority: 361, turnout: 71, republic: 2,
-      results: [ ["EvH",152,20.1], ["SPC",145,19.2], ["CORE",133,17.5], ["ENLM",86,11.3], ["AMIN",77,10.2], ["NASC",73,9.7], ["Delta",54,7.1] ] },
+      results: [ ["EvH",152,20.1], ["UCP",145,19.2], ["CORE",133,17.5], ["ENLM",86,11.3], ["AMIN",77,10.2], ["NASC",73,9.7], ["Delta",54,7.1] ] },
     { year: 2064, seats: 720, majority: 361, turnout: 78, republic: 2,
-      results: [ ["EvH",210,29.2], ["CORE",156,21.6], ["SPC",128,17.8], ["ENLM",94,13.0], ["Astra",73,10.2], ["AMIN",59,8.2] ] },
+      results: [ ["EvH",210,29.2], ["CORE",156,21.6], ["UCP",128,17.8], ["ENLM",94,13.0], ["Astra",73,10.2], ["AMIN",59,8.2] ] },
     { year: 2067, seats: 720, majority: 361, turnout: 76, republic: 2,
-      results: [ ["CORE",214,29.8], ["EvH",176,24.4], ["ENLM",122,16.9], ["SPC",108,15.0], ["Astra",100,13.9] ] }
+      results: [ ["CORE",214,29.8], ["EvH",176,24.4], ["ENLM",122,16.9], ["UCP",108,15.0], ["Astra",100,13.9] ] },
+    { year: 2070, seats: 720, majority: 361, turnout: 71, republic: 2,
+      results: [ ["Arise!",232,30.7], ["EfEP",142,19.6], ["EvH",132,18.2], ["UCP",130,15.2], ["ENLM",45,6.2], ["PC",39,4.9], ["FCP",0,3.6], ["CCCSP",0,1.6] ] }
   ];
 
   function loadState(){
@@ -966,9 +1017,18 @@
     }catch(e){ return defaultState(); }
   }
 
-  function saveState(){
+  var saveTimer = null;
+  function flushState(){
+    if(saveTimer){ clearTimeout(saveTimer); saveTimer = null; }
     try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){ /* ignore */ }
   }
+  // Batch rapid edits (typing in a % box) into one write instead of one per keystroke.
+  function saveState(){
+    if(saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(flushState, 300);
+  }
+  window.addEventListener("pagehide", flushState);
+  document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") flushState(); });
 
   var state = loadState();
   var searchTerm = "";
@@ -1472,8 +1532,8 @@
   // Stance on federal structure: separatist voters won't transfer to a centralist party —
   // that portion is treated as wasted/abstained rather than redistributed.
   var partyCentralization = {
-    "EfEP": "centralist", "Arise!": "centralist",
-    "ENLM": "federalist", "EvH": "federalist", "SPC": "federalist", "FCP": "federalist",
+    "EfEP": "centralist", "Arise!": "centralist", "REN": "centralist",
+    "ENLM": "federalist", "EvH": "federalist", "UCP": "federalist", "FCP": "federalist",
     "PC": "separatist"
   };
   function isCentralizationIncompatible(fromAbbr, toAbbr){
@@ -1484,9 +1544,9 @@
   var INCOMPATIBLE_WASTE_RATIO = 0.75; // most of an incompatible share is wasted; the rest boosts the next-best compatible party
 
   // Documented real-world relationships among the current parties, layered on top of the
-  // abstract ideological model: EvH and PC's long-standing sister-party bond, and SPC/ENLM's
+  // abstract ideological model: EvH and PC's long-standing sister-party bond, and UCP/ENLM's
   // presidential endorsement of EvH's candidate.
-  var knownAffinities = [ ["EvH","PC"], ["EvH","SPC"], ["EvH","ENLM"] ];
+  var knownAffinities = [ ["EvH","PC"], ["EvH","UCP"], ["EvH","ENLM"] ];
   var AFFINITY_BONUS = 2.0;
   function hasKnownAffinity(abbrA, abbrB){
     return knownAffinities.some(function(pair){
@@ -1678,20 +1738,28 @@
     return positions;
   }
 
+  // Seat coordinates only depend on the seat total, so compute them once per total.
+  var hemicycleCache = {};
+  function hemicycleLayout(total){
+    if(!hemicycleCache[total]){
+      hemicycleCache[total] = buildHemicycleSeatOrder(total).map(function(pos){
+        var rad = pos.theta * Math.PI / 180;
+        return { x: (380 + pos.r * Math.cos(rad)).toFixed(1), y: (380 - pos.r * Math.sin(rad)).toFixed(1) };
+      });
+    }
+    return hemicycleCache[total];
+  }
+
+  var SVG_NS = "http://www.w3.org/2000/svg";
   function renderHemicycle(svgEl, seatColors, seatListIds, selectedIds){
-    var total = seatColors.length;
-    var positions = buildHemicycleSeatOrder(total);
-    var cx = 380, cy = 380;
+    var layout = hemicycleLayout(seatColors.length);
     var frag = document.createDocumentFragment();
     var hasSelection = selectedIds && selectedIds.length > 0;
-    positions.forEach(function(pos, i){
-      var rad = pos.theta * Math.PI / 180;
-      var x = cx + pos.r * Math.cos(rad);
-      var y = cy - pos.r * Math.sin(rad);
-      var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      circle.setAttribute("cx", x.toFixed(1));
-      circle.setAttribute("cy", y.toFixed(1));
+    layout.forEach(function(pos, i){
+      var circle = document.createElementNS(SVG_NS, "circle");
       var isSelected = hasSelection && seatListIds && selectedIds.indexOf(seatListIds[i]) !== -1;
+      circle.setAttribute("cx", pos.x);
+      circle.setAttribute("cy", pos.y);
       circle.setAttribute("r", isSelected ? 6.0 : 5.4);
       circle.setAttribute("class", "seat");
       circle.setAttribute("fill", seatColors[i] || "#999");
@@ -1704,8 +1772,7 @@
       }
       frag.appendChild(circle);
     });
-    svgEl.innerHTML = "";
-    svgEl.appendChild(frag);
+    svgEl.replaceChildren(frag);
   }
 
   function renderSeatShareBar(barEl, axisEl, segments, totalSeats, majoritySeats){
@@ -1833,20 +1900,18 @@
     renderCoalitionBar(seatsById);
     renderStandings(seatsById);
 
+    var ordered = sortedListsForDiagram();
     var seatColors = [];
     var seatListIds = [];
-    sortedListsForDiagram().forEach(function(list){
+    var segments = [];
+    ordered.forEach(function(list){
       var n = seatsById[list.id] || 0;
       for(var i=0;i<n;i++){ seatColors.push(list.color); seatListIds.push(list.id); }
+      segments.push({ color: list.color, seats: n, abbr: list.abbr });
     });
     while(seatColors.length < TOTAL_SEATS){ seatColors.push("#e4ded0"); seatListIds.push(null); }
 
-    var svgEl = document.getElementById("hemiSvg");
-    renderHemicycle(svgEl, seatColors, seatListIds, state.coalition);
-
-    var segments = sortedListsForDiagram().map(function(list){
-      return { color: list.color, seats: seatsById[list.id] || 0, abbr: list.abbr };
-    });
+    renderHemicycle(document.getElementById("hemiSvg"), seatColors, seatListIds, state.coalition);
     renderSeatShareBar(document.getElementById("seatShareBar"), document.getElementById("seatShareAxis"), segments, TOTAL_SEATS, MAJORITY);
   }
 
@@ -2264,7 +2329,7 @@
 
   // ---------- Party glossary ----------
 
-  var glossaryFilter = "all";
+  var glossaryFilter = "current";
 
   function renderGlossary(term){
     var listEl = document.getElementById("glossaryList");
@@ -2348,12 +2413,307 @@
     });
   });
 
+  // ---------- Political compass ----------
+
+  function renderCompass(){
+    var svg = document.getElementById("compassSvg");
+    if(!svg) return;
+    var W = 640, H = 640, pad = 60;
+    var plotW = W - 2*pad, plotH = H - 2*pad;
+    var DOMAIN_MIN = 0, DOMAIN_MAX = 10;
+    function xFor(v){ return pad + ((v - DOMAIN_MIN) / (DOMAIN_MAX - DOMAIN_MIN)) * plotW; }
+    function yFor(v){ return pad + plotH - ((v - DOMAIN_MIN) / (DOMAIN_MAX - DOMAIN_MIN)) * plotH; }
+    var svgNs = "http://www.w3.org/2000/svg";
+    var frag = document.createDocumentFragment();
+
+    [0, 2.5, 5, 7.5, 10].forEach(function(v){
+      var vLine = document.createElementNS(svgNs, "line");
+      vLine.setAttribute("x1", xFor(v)); vLine.setAttribute("x2", xFor(v));
+      vLine.setAttribute("y1", pad); vLine.setAttribute("y2", H - pad);
+      vLine.setAttribute("class", "gridline");
+      frag.appendChild(vLine);
+      var hLine = document.createElementNS(svgNs, "line");
+      hLine.setAttribute("y1", yFor(v)); hLine.setAttribute("y2", yFor(v));
+      hLine.setAttribute("x1", pad); hLine.setAttribute("x2", W - pad);
+      hLine.setAttribute("class", "gridline");
+      frag.appendChild(hLine);
+    });
+
+    var vMid = document.createElementNS(svgNs, "line");
+    vMid.setAttribute("x1", xFor(5)); vMid.setAttribute("x2", xFor(5));
+    vMid.setAttribute("y1", pad); vMid.setAttribute("y2", H - pad);
+    vMid.setAttribute("stroke", "currentColor"); vMid.setAttribute("stroke-width", "1.2"); vMid.setAttribute("opacity", "0.35");
+    frag.appendChild(vMid);
+    var hMid = document.createElementNS(svgNs, "line");
+    hMid.setAttribute("y1", yFor(5)); hMid.setAttribute("y2", yFor(5));
+    hMid.setAttribute("x1", pad); hMid.setAttribute("x2", W - pad);
+    hMid.setAttribute("stroke", "currentColor"); hMid.setAttribute("stroke-width", "1.2"); hMid.setAttribute("opacity", "0.35");
+    frag.appendChild(hMid);
+
+    function addLabel(x, y, text, anchor, rotate){
+      var t = document.createElementNS(svgNs, "text");
+      t.setAttribute("x", x); t.setAttribute("y", y);
+      t.setAttribute("text-anchor", anchor || "middle");
+      t.setAttribute("class", "axis-label");
+      if(rotate) t.setAttribute("transform", "rotate(-90 " + x + " " + y + ")");
+      t.textContent = text;
+      frag.appendChild(t);
+    }
+    addLabel(pad, H - pad + 28, "← Economically left", "start");
+    addLabel(W - pad, H - pad + 28, "Economically right →", "end");
+    addLabel(24, H - pad, "← Progressive / liberal", "start", true);
+    addLabel(24, pad, "Traditional / authoritarian →", "end", true);
+
+    var lists = state.lists.length ? state.lists : [];
+    lists.forEach(function(l){
+      var econ = econOf(l.abbr), social = socialOf(l.abbr);
+      var cx = xFor(econ), cy = yFor(social);
+      var c = document.createElementNS(svgNs, "circle");
+      c.setAttribute("cx", cx.toFixed(1)); c.setAttribute("cy", cy.toFixed(1));
+      c.setAttribute("r", 9);
+      c.setAttribute("fill", l.color);
+      c.setAttribute("stroke", "#ffffff"); c.setAttribute("stroke-width", "1.5");
+      var title = document.createElementNS(svgNs, "title");
+      title.textContent = l.abbr + " — economic " + econ.toFixed(1) + ", social " + social.toFixed(1);
+      c.appendChild(title);
+      frag.appendChild(c);
+
+      var label = document.createElementNS(svgNs, "text");
+      label.setAttribute("x", (cx + 12).toFixed(1));
+      label.setAttribute("y", (cy + 4).toFixed(1));
+      label.setAttribute("class", "axis-label");
+      label.style.fontWeight = "700";
+      label.style.fill = l.color;
+      label.textContent = l.abbr;
+      frag.appendChild(label);
+    });
+
+    svg.innerHTML = "";
+    svg.appendChild(frag);
+  }
+
+  // ---------- Collapsible sections ----------
+
+  function setupCollapsibleSections(){
+    document.querySelectorAll(".subsection").forEach(function(sub){
+      var headRow = sub.querySelector(".section-head .head-row");
+      if(!headRow || headRow.querySelector(".section-toggle")) return;
+      var toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "section-toggle";
+      toggle.setAttribute("aria-label", "Collapse section");
+      toggle.textContent = "▾";
+      headRow.appendChild(toggle);
+      toggle.addEventListener("click", function(){
+        var collapsed = sub.classList.toggle("section-collapsed");
+        toggle.setAttribute("aria-label", collapsed ? "Expand section" : "Collapse section");
+      });
+    });
+  }
+
+  // ---------- Senate ----------
+
+  var senateResults = [
+    ["EvH", 5, 23.7], ["UCP", 4, 19.0], ["Arise!", 3, 14.3], ["EfEP", 3, 14.3],
+    ["ENLM", 2, 9.5], ["UFD", 1, 4.8], ["VCA", 1, 4.8], ["PEOPLES", 2, 9.6]
+  ];
+  var SENATE_TOTAL = 21, SENATE_MAJORITY = 11;
+
+  // Renders a Westminster-style chamber: facing benches top and bottom, a small
+  // crossbench cluster to the right. seats = {abbr, color} flattened one-per-seat.
+  function renderWestminster(svgEl, topSeats, bottomSeats, crossSeats){
+    var W = 760, H = 420;
+    var svgNs = "http://www.w3.org/2000/svg";
+    var frag = document.createDocumentFragment();
+    var seatR = 13, rowGap = 32, seatGap = 30, maxPerRow = 13;
+    var benchStartX = 40, benchWidth = 560;
+    var centerY = H / 2;
+
+    function chunk(arr, size){
+      var rows = [];
+      for(var i = 0; i < arr.length; i += size) rows.push(arr.slice(i, i + size));
+      return rows;
+    }
+    function drawSeat(x, y, seat){
+      var c = document.createElementNS(svgNs, "circle");
+      c.setAttribute("cx", x.toFixed(1)); c.setAttribute("cy", y.toFixed(1)); c.setAttribute("r", seatR);
+      c.setAttribute("fill", seat.color);
+      c.setAttribute("stroke", "#ffffff"); c.setAttribute("stroke-width", "1.3");
+      var title = document.createElementNS(svgNs, "title");
+      title.textContent = seat.abbr;
+      c.appendChild(title);
+      frag.appendChild(c);
+    }
+    function drawRow(row, y){
+      var totalWidth = (row.length - 1) * seatGap;
+      var rowStartX = benchStartX + (benchWidth - totalWidth) / 2;
+      row.forEach(function(seat, i){ drawSeat(rowStartX + i * seatGap, y, seat); });
+    }
+
+    var topRows = chunk(topSeats, maxPerRow);
+    topRows.forEach(function(row, idx){ drawRow(row, 60 + idx * rowGap); });
+
+    var bottomRows = chunk(bottomSeats, maxPerRow);
+    bottomRows.forEach(function(row, idx){ drawRow(row, (H - 60) - idx * rowGap); });
+
+    var crossX = benchStartX + benchWidth + 70;
+    var crossRows = chunk(crossSeats, 2);
+    crossRows.forEach(function(row, idx){
+      var y = centerY - ((crossRows.length - 1) / 2) * rowGap + idx * rowGap;
+      var totalWidth = (row.length - 1) * seatGap;
+      var rowStartX = crossX - totalWidth / 2;
+      row.forEach(function(seat, i){ drawSeat(rowStartX + i * seatGap, y, seat); });
+    });
+
+    var aisle = document.createElementNS(svgNs, "line");
+    aisle.setAttribute("x1", benchStartX); aisle.setAttribute("x2", benchStartX + benchWidth);
+    aisle.setAttribute("y1", centerY); aisle.setAttribute("y2", centerY);
+    aisle.setAttribute("stroke", "currentColor"); aisle.setAttribute("opacity", "0.15"); aisle.setAttribute("stroke-width", "1");
+    frag.insertBefore(aisle, frag.firstChild);
+
+    svgEl.innerHTML = "";
+    svgEl.appendChild(frag);
+  }
+
+  var SENATE_TOP_BENCH = ["EvH", "UCP", "ENLM"];
+  var SENATE_BOTTOM_BENCH = ["Arise!", "EfEP"];
+
+  function renderSenate(){
+    var svgEl = document.getElementById("senateSvg");
+    if(!svgEl) return;
+
+    var parties = senateResults.map(function(r){ return { abbr: r[0], seats: r[1], percent: r[2], color: colorForAbbr(r[0]) }; });
+
+    var topParties = SENATE_TOP_BENCH.map(function(abbr){ return parties.find(function(p){ return p.abbr === abbr; }); }).filter(Boolean);
+    var bottomParties = SENATE_BOTTOM_BENCH.map(function(abbr){ return parties.find(function(p){ return p.abbr === abbr; }); }).filter(Boolean);
+    var crossParties = parties.filter(function(p){ return SENATE_TOP_BENCH.indexOf(p.abbr) === -1 && SENATE_BOTTOM_BENCH.indexOf(p.abbr) === -1; });
+
+    parties = topParties.concat(bottomParties, crossParties);
+
+    function flatten(list){
+      var seats = [];
+      list.forEach(function(p){ for(var i=0;i<p.seats;i++) seats.push({ abbr: p.abbr, color: p.color }); });
+      return seats;
+    }
+    renderWestminster(svgEl, flatten(topParties), flatten(bottomParties), flatten(crossParties));
+
+    var segments = parties.map(function(p){ return { color: p.color, seats: p.seats, abbr: p.abbr }; });
+    renderSeatShareBar(document.getElementById("senateSeatShareBar"), document.getElementById("senateSeatShareAxis"), segments, SENATE_TOTAL, SENATE_MAJORITY);
+
+    var legendEl = document.getElementById("senateLegend");
+    legendEl.innerHTML = "";
+    parties.forEach(function(p){
+      var item = document.createElement("div");
+      item.className = "legend-item";
+      var chip = document.createElement("span");
+      chip.className = "chip";
+      chip.style.background = p.color;
+      item.appendChild(chip);
+      var label = document.createElement("span");
+      label.innerHTML = p.abbr + " <span class=\"n\">" + p.seats + "</span>";
+      item.appendChild(label);
+      legendEl.appendChild(item);
+    });
+
+    var body = document.getElementById("senateResultsBody");
+    body.innerHTML = "";
+    parties.forEach(function(p){
+      var tr = document.createElement("tr");
+      var nameTd = document.createElement("td");
+      var dot = document.createElement("span");
+      dot.style.display = "inline-block"; dot.style.width = "10px"; dot.style.height = "10px";
+      dot.style.borderRadius = "50%"; dot.style.background = p.color; dot.style.marginRight = "8px";
+      nameTd.appendChild(dot);
+      nameTd.appendChild(document.createTextNode(p.abbr));
+      tr.appendChild(nameTd);
+      var pctTd = document.createElement("td"); pctTd.className = "num"; pctTd.textContent = p.percent.toFixed(1) + "%";
+      tr.appendChild(pctTd);
+      var seatsTd = document.createElement("td"); seatsTd.className = "num"; seatsTd.textContent = p.seats;
+      tr.appendChild(seatsTd);
+      body.appendChild(tr);
+    });
+  }
+
+  // ---------- Regional breakdown ----------
+
+  var regionsData = [
+    {
+      name: "Iberia",
+      // PEOPLES merges FLE + FOI + SIP + PC(173) + Aralar into one alliance line
+      results: [ ["CCCSP",1,1.9], ["Arise!",29,8.8], ["PEOPLES",256,58.0], ["REN",18,6.1], ["FCP",1,2.1], ["ARI",1,4.9], ["ENLM",4,4.1], ["PUI",50,14.2] ]
+    },
+    {
+      name: "Nordics",
+      results: [ ["CCCSP",4,0.7], ["SPR",285,50.4], ["UCP",37,6.6], ["REN",35,6.1], ["F!",25,4.4], ["NTP",33,6.0], ["NHP",50,8.9], ["ENLM",63,11.2], ["EfEP",33,5.8] ]
+    },
+    {
+      name: "Visegrad",
+      results: [ ["Arise!",84,17.2], ["UCP",21,5.3], ["REN",15,4.3], ["FCP",15,4.1], ["VCA",141,30.0], ["EvH",60,12.7], ["ENLM",35,7.3], ["EfEP",79,16.4], ["GUARDIAN",10,3.4] ]
+    },
+    {
+      name: "Teutony",
+      // LT merges Arise! + EfEP into one alliance line
+      results: [ ["LT",84,12.3], ["SPB",189,27.2], ["UFD",121,17.1], ["SSW",2,0.3], ["FNP",5,0.7], ["THP",114,16.3], ["ENLM",185,26.5] ]
+    },
+    {
+      name: "Danubia",
+      // FDD merges EfEP + Arise! + Centre; P64 is the alliance of DD (Danubian Dream, 61 seats) + ENLM; DDU stands alone
+      results: [ ["FDD",191,56.6], ["DDU",4,3.2], ["P64",134,34.3], ["POR",1,3.8] ]
+    }
+  ];
+
+  function renderRegions(){
+    var list = document.getElementById("regionsList");
+    if(!list) return;
+    list.innerHTML = "";
+    regionsData.forEach(function(r){
+      var card = document.createElement("div");
+      card.className = "card";
+
+      var name = document.createElement("div");
+      name.className = "g-name";
+      name.style.marginBottom = "10px";
+      name.textContent = r.name + " Assembly";
+      card.appendChild(name);
+
+      var parties = r.results.map(function(row){ return { abbr: row[0], seats: row[1], pct: row[2], color: colorForAbbr(row[0]) }; });
+
+      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 760 420");
+      svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", "Seat composition of the " + r.name + " Assembly");
+      svg.style.width = "100%"; svg.style.height = "auto"; svg.style.display = "block"; svg.style.marginBottom = "12px";
+      card.appendChild(svg);
+
+      var seatColors = [];
+      parties.forEach(function(p){ for(var i=0;i<p.seats;i++) seatColors.push(p.color); });
+      renderHemicycle(svg, seatColors, null, null);
+
+      var resultsRow = document.createElement("div");
+      resultsRow.style.display = "flex"; resultsRow.style.flexWrap = "wrap"; resultsRow.style.gap = "6px 14px";
+      parties.forEach(function(p){
+        var item = document.createElement("span");
+        item.style.fontSize = ".8rem"; item.style.whiteSpace = "nowrap";
+        var dot = document.createElement("span");
+        dot.style.display = "inline-block"; dot.style.width = "9px"; dot.style.height = "9px";
+        dot.style.borderRadius = "50%"; dot.style.background = p.color;
+        dot.style.marginRight = "5px"; dot.style.verticalAlign = "middle";
+        item.appendChild(dot);
+        item.appendChild(document.createTextNode(p.abbr + " " + p.seats + " (" + p.pct.toFixed(1) + "%)"));
+        resultsRow.appendChild(item);
+      });
+      card.appendChild(resultsRow);
+
+      list.appendChild(card);
+    });
+  }
+
   // ---------- Party lineage ----------
 
   // Each chain is a sequence of steps. A step is either a single abbr (string)
   // or an array of abbrs that merged together at that point.
   var lineageChains = [
-    { title: "Green-red / socialist lineage", steps: ["GRASP", "SOLAR", "GRASP", "RLP", "SPC"] },
+    { title: "Green-red / socialist lineage", steps: ["GRASP", "SOLAR", "GRASP", "RLP", "SPC", "UCP"] },
     { title: "Radical-left lineage", steps: [["DSA","SDP"], "RSA", "RLP"] },
     { title: "Liberal-conservative / technocratic lineage", steps: [["CLPB","PFD"], "ELC", "FTU", "DU", "CAFE"] },
     { title: "Evropean Rebirth lineage", steps: ["ER", "CORE", "Arise!"] },
@@ -2515,6 +2875,7 @@
   function renderAll(){
     renderListsEditor();
     renderResults();
+    renderCompass();
     saveState();
   }
 
@@ -2523,7 +2884,10 @@
   renderAll();
   renderHistoryChart();
   populateElectionSelect();
+  setupCollapsibleSections();
   renderGlossary("");
+  renderSenate();
+  renderRegions();
   renderLineage();
   setupNavHighlighting();
   updateUndoRedoButtons();
