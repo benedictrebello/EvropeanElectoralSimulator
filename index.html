@@ -669,8 +669,8 @@
       <div class="explainer-step">
         <div class="num">6</div>
         <div class="body">
-          <h3>Some votes are wasted outright</h3>
-          <p>Before any of the above, the Vote wastage slider in Configuration holds back a share of every failed list's votes as abstention — voters who'd rather not transfer to anyone than compromise.</p>
+          <h3>Some votes are wasted outright (more for PLUS)</h3>
+          <p>Before any of the above, the Vote wastage slider in Configuration holds back a share of every failed list's votes as abstention — voters who'd rather not transfer to anyone than compromise. PLUS, a confederation of regional parties with many different ideologies, is treated differently: half its votes don't transfer at all, and the rest are split equally among the surviving lists rather than by ideological closeness.</p>
         </div>
       </div>
       <div class="explainer-step">
@@ -1016,7 +1016,7 @@
     { type: "party", abbr: "SPC", name: "Social Progressive Cooperation", founded: "21 July 2056 (rebranded as UCP)", ideology: "Social democracy, Progressivism, Environmentalism, World federalism", position: "Centre to centre-left", notes: "Rebranded as the United Civic Platform (UCP). A successor to the Radicalist Labour Party. Advocates welfare capitalism with an emphasis on reducing inequality and supporting environmentalism at home and abroad, welcoming immigration and seeking state influence in the economy to ensure fair working conditions. Internationally supports world unity and cooperation. President: Matteo Moravietti." },
     { type: "party", abbr: "UCP", name: "United Civic Platform", founded: "21 July 2056 (as SPC; rebranded as UCP)", ideology: "Social democracy, Progressivism, Environmentalism, World federalism", position: "Centre to centre-left", notes: "Formerly the Social Progressive Cooperation (SPC). The rebrand aims to establish it as the dominant left-of-centre force, continuing its social democratic and progressive tradition, and is widely seen as a way to distance the party from old scandals. A successor to the Radicalist Labour Party. Advocates welfare capitalism with an emphasis on reducing inequality and supporting environmentalism at home and abroad, welcoming immigration and seeking state influence in the economy to ensure fair working conditions. Internationally supports world unity and cooperation. President: Matteo Moravietti." },
     { type: "party", abbr: "Arise!", name: "Arise!", founded: "25 December 2068 (merger of Astra and Evropean Rebirth)", ideology: "Left-wing, Democratic socialism, Populism, Evronationalism, Unitarism, Labourism, Progressivism", position: "Left-wing", notes: "Formed from the merger of Astra and Evropean Rebirth; its branches include the Socialist Popular Rally and PA-KD. Supports workers' rights, economic equality, workplace self-governance and stronger unions, alongside a strong Evropean military and protectionist trade policy to build industrial self-sufficiency. Localist and unitarian on governance with minor federalist factions, and supportive of direct democracy. Led by Alice G. Aureli and Élise Valente." },
-    { type: "alliance", abbr: "PLUS", name: "PLUS", founded: "—", ideology: "Syncretic (no specific ideology)", position: "No fixed position", notes: "A federal political confederation uniting regional and autonomous movements across Evropa while preserving each member party's full independence at every other level of government. Syncretic, with no specific ideology. Its federal programme covers only decentralisation, subsidiarity, regional democracy, transparency and regional rights; on all other matters members vote independently, and joining a federal government requires unanimous agreement among its constituents. It does not operate below federal level — members keep their own names, leadership, ideology and regional coalitions, appearing on the ballot under joint branding such as PLUS–VCA or PLUS–Carlist. Members: Iberia (Carlists, FOI, Aralar, FLE), Mediterranea (Carlists, Sanfedistas, IMCE), Frankia (FA), Danubia (DAP, DDU, POR), the Nordics (INP), Visegrad (LSS, PC, GP)." },
+    { type: "alliance", abbr: "PLUS", name: "PLUS", founded: "—", ideology: "Syncretic (no specific ideology)", position: "No fixed position", notes: "A federal political confederation uniting regional and autonomous movements across Evropa while preserving each member party's full independence at every other level of government. Syncretic, with no specific ideology — its members span many different ideologies, so its voters show no preference for unitary or centrist parties. Its federal programme covers only decentralisation, subsidiarity, regional democracy, transparency and regional rights; on all other matters members vote independently, and joining a federal government requires unanimous agreement among its constituents. It does not operate below federal level — members keep their own names, leadership, ideology and regional coalitions, appearing on the ballot under joint branding such as PLUS–VCA or PLUS–Carlist. Members: Iberia (Carlists, FOI, Aralar, FLE), Mediterranea (Carlists, Sanfedistas, IMCE), Frankia (FA), Danubia (DAP, DDU, POR), the Nordics (INP), Visegrad (LSS, PC, GP)." },
     { type: "party", abbr: "PC", name: "Carlist Party", founded: "Roughly three decades of continuous activity, by its own leadership's account", ideology: "Carlism, Catholic social justice, Communitarianism, Confederalism, Foralism, Self-management socialism, Plurinational Iberianism, Self-determination", position: "Centre-left", notes: "An independent Iberian movement rooted in the historic defence of communities, regional liberties and social justice, combining Catholic social teaching with support for welfare, worker and cooperative ownership. Advocates a plurinational, confederal Iberia built upward from its peoples and municipalities, defending fueros and extensive self-government, and supports a ceremonial, non-partisan head of state. Now fully independent of Evropa Harmony (EvH). Long dominant in Iberian regional politics — Villa Jr has served as Premier/Steward of Iberia overseeing the 'Iberian Decade' legislative programme (the POWER, SPARK, SIGNATURE, and EXPORT+ Acts). Maintains autonomous regional branches (PNCC, PCR, RSMC) and has taken part in alliances such as PEOPLES and the League of Mediterranea. Leader: Bilal." },
     { type: "party", abbr: "FCP", name: "Free Citizens' Party", founded: "2068", ideology: "Anti-corruption, Anti-nepotism, Pirate politics, Environmentalism, Moderate economics, Direct democracy, Provincialism", position: "Centre-right", notes: "Founded in response to the rise of political dynasties in Evropean politics, blending pirate politics with progressive liberal economics. Advocates direct democracy, reduced presidential power and increased privacy, favouring small and medium business over monopolies with stronger consumer protections. Leader: Theo." },
     { type: "party", abbr: "CCCSP", name: "Communist Coordination Committee of Socialist Parties", founded: "2068", ideology: "Revolutionary communism, Revolutionary socialism", position: "Far-left", notes: "A revolutionary movement uniting communists, socialists, anti-capitalists, feminists, environmentalists and anti-imperialists toward overthrowing the capitalist world and building a new Evropean union. Operates on democratic centralism, pursuing tactical participation in institutions while building structures to abolish them. Condemns Western embargoes and supports proletarian internationalism. Leader: Chairman Chris." }
@@ -1668,6 +1668,10 @@
     });
   }
 
+  // Confederations of many differing ideologies: no ideological pull, a large share of voters
+  // don't transfer at all, and whatever does transfer is split equally among the survivors.
+  var CONFEDERAL_LISTS = { "PLUS": { wastage: 50 } };
+
   function computeSeats(){
     // All lists below their threshold are eliminated at once; none can be rescued by transfers.
     var entries = state.lists.map(function(l){ return { list: l, percent: percentOf(l) }; });
@@ -1681,13 +1685,15 @@
       if(!survivors.length){ redistributionMap[lowest.list.id] = { shares: [], wasted: lowest.percent }; return; }
 
       var lAbbr = lowest.list.abbr;
+      var confederal = CONFEDERAL_LISTS[lAbbr];
       var weights = survivors.map(function(e){
+        if(confederal) return 1;
         var w = Math.exp(-state.redistributionSteepness * ideoDistance(lAbbr, e.list.abbr));
         if(hasKnownAffinity(lAbbr, e.list.abbr)) w *= AFFINITY_BONUS;
         return w;
       });
       var totalWeight = weights.reduce(function(a,b){ return a + b; }, 0);
-      var wastedAmount = lowest.percent * (state.voteWastage / 100);
+      var wastedAmount = lowest.percent * ((confederal ? confederal.wastage : state.voteWastage) / 100);
       var redistributable = lowest.percent - wastedAmount;
 
       var compatible = survivors.map(function(e){ return !isCentralizationIncompatible(lAbbr, e.list.abbr); });
