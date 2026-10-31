@@ -649,14 +649,14 @@
         <div class="num">3</div>
         <div class="body">
           <h3>Distance decays into a weight</h3>
-          <p>Each potential recipient gets a weight of <code>e^(−steepness × distance)</code>. The steepness slider in Configuration controls how sharply this falls off — higher values concentrate votes almost entirely on the nearest ideological match; lower values spread them more evenly.</p>
+          <p>Each potential recipient gets a weight of <code>e^(−steepness × distance)</code>. The steepness slider in Configuration controls how sharply this falls off — higher values concentrate votes almost entirely on the nearest ideological match; lower values spread them more evenly. Issue-driven protest parties such as FCP, whose voters come from across the spectrum, use a flatter curve (a fifth of the slider value).</p>
         </div>
       </div>
       <div class="explainer-step">
         <div class="num">4</div>
         <div class="body">
           <h3>Known real-world alliances get a bonus</h3>
-          <p>A couple of documented relationships (Evropa Harmony's ties to UCP and ENLM) get their weight doubled on top of the ideological math — enough to tip a close contest, not enough to override a genuine ideological gap.</p>
+          <p>A few documented relationships (Evropa Harmony's ties to UCP and ENLM, and the pirate-politics and liberal overlap between FCP and ENLM) get their weight doubled on top of the ideological math — enough to tip a close contest, not enough to override a genuine ideological gap.</p>
         </div>
       </div>
       <div class="explainer-step">
@@ -1660,7 +1660,7 @@
   // Documented real-world relationships among the current parties, layered on top of the
   // abstract ideological model: EvH and PC's long-standing sister-party bond, and SPC/ENLM's
   // presidential endorsement of EvH's candidate.
-  var knownAffinities = [ ["EvH","UCP"], ["EvH","ENLM"] ];
+  var knownAffinities = [ ["EvH","UCP"], ["EvH","ENLM"], ["FCP","ENLM"] ];
   var AFFINITY_BONUS = 2.0;
   function hasKnownAffinity(abbrA, abbrB){
     return knownAffinities.some(function(pair){
@@ -1670,6 +1670,10 @@
 
   // Confederations of many differing ideologies: no ideological pull, a large share of voters
   // don't transfer at all, and whatever does transfer is split equally among the survivors.
+  // Issue-driven protest parties draw voters from across the spectrum, so their transfers
+  // follow ideology more loosely: a lower value flattens the distance decay for that list.
+  var STEEPNESS_SCALE = { "FCP": 0.2 };
+
   var CONFEDERAL_LISTS = { "PLUS": { wastage: 50 } };
 
   function computeSeats(){
@@ -1688,7 +1692,8 @@
       var confederal = CONFEDERAL_LISTS[lAbbr];
       var weights = survivors.map(function(e){
         if(confederal) return 1;
-        var w = Math.exp(-state.redistributionSteepness * ideoDistance(lAbbr, e.list.abbr));
+        var steep = state.redistributionSteepness * (STEEPNESS_SCALE[lAbbr] || 1);
+        var w = Math.exp(-steep * ideoDistance(lAbbr, e.list.abbr));
         if(hasKnownAffinity(lAbbr, e.list.abbr)) w *= AFFINITY_BONUS;
         return w;
       });
